@@ -3,12 +3,18 @@
 -}
 module Graphics.UI.Terminal where
 
+  import Control.Monad.Eff
+  import Debug.Trace
+
   import Graphics.UI
 
   newtype Terminal = Terminal String
 
   runTerminal :: Terminal -> String
   runTerminal (Terminal str) = str
+
+  printTerminal :: forall eff. Terminal -> Eff (trace :: Trace | eff) Unit
+  printTerminal = runTerminal >>> trace
 
   instance textTerminal :: Text Terminal where
     text = Terminal

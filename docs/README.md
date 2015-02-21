@@ -92,6 +92,13 @@ instance textHTML :: Text HTML
 ```
 
 
+#### `textBodyTag`
+
+``` purescript
+instance textBodyTag :: Text BodyTag
+```
+
+
 #### `indent`
 
 ``` purescript
@@ -196,6 +203,13 @@ newtype Terminal
 
 ``` purescript
 runTerminal :: Terminal -> String
+```
+
+
+#### `printTerminal`
+
+``` purescript
+printTerminal :: forall eff. Terminal -> Eff (trace :: Trace | eff) Unit
 ```
 
 

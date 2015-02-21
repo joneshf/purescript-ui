@@ -24,7 +24,13 @@ var paths = {
 
 var options = {
     compiler: {},
-    examples: {main: 'Examples.Graphics.UI.Terminal'},
+    examples: {
+        terminal: {main: 'Examples.Graphics.UI.Terminal'},
+        html: {
+            modules: 'Examples.Graphics.UI.HTML',
+            output: 'examples/Examples/Graphics/UI/HTML/hello.js'
+        }
+    },
     pscDocs: {}
 };
 
@@ -91,10 +97,16 @@ gulp.task('docs', function() {
       .pipe(gulp.dest(paths.docsDest));
 });
 
-gulp.task('examples', function() {
-    return compile(purescript.psc, [paths.exampleSrc], options.examples)
+gulp.task('examples-Terminal', function() {
+    return compile(purescript.psc, [paths.exampleSrc], options.examples.terminal)
         .pipe(run('node'));
 });
+
+gulp.task('examples-HTML', function() {
+    return compile(purescript.psc, [paths.exampleSrc], options.examples.html);
+});
+
+gulp.task('examples', ['examples-HTML', 'examples-Terminal']);
 
 gulp.task('watch-browser', function() {
     gulp.watch(paths.src, ['browser', 'docs']);

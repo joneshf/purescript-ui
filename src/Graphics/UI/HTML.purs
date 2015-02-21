@@ -20,7 +20,10 @@ module Graphics.UI.HTML where
   newtype BodyTag = P String
 
   instance textHTML :: Text HTML where
-    text str = HTML (Head $ Title "") (Body [P str])
+    text str = HTML (Head $ Title "") (Body [text str])
+
+  instance textBodyTag :: Text BodyTag where
+    text = P
 
   -- | A little helper function to generate properly indented strings.
   -- | This should be done more efficiently though.

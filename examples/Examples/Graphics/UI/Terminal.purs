@@ -1,10 +1,7 @@
 module Examples.Graphics.UI.Terminal where
 
-  import Debug.Trace
+  import Examples.Graphics.UI.Hello (hello)
 
-  import Graphics.UI
-  import Graphics.UI.Terminal
+  import Graphics.UI.Terminal (printTerminal)
 
-  main = do
-    trace $ runTerminal $ text "Hello World"
-    trace $ runTerminal $ color Red $ text "wat?!?"
+  main = printTerminal hello
