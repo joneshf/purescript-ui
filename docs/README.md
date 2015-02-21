@@ -14,10 +14,10 @@ class Text lang where
 
 We can make some text.
 
-#### `ColorStyle`
+#### `ColorSimple`
 
 ``` purescript
-class ColorStyle lang where
+class ColorSimple lang where
   color :: Color -> lang -> lang
 ```
 
@@ -30,9 +30,14 @@ data Color
   = Black 
   | White 
   | Red 
+  | Green 
+  | Yellow 
+  | Blue 
+  | Brown 
 ```
 
 The possible colors we can make.
+Based on the first six stages of color in language by Berlin and Kay.
 
 
 ## Module Graphics.UI.HTML
@@ -201,10 +206,10 @@ instance textTerminal :: Text Terminal
 ```
 
 
-#### `colorStyleTerminal`
+#### `colorSimpleTerminal`
 
 ``` purescript
-instance colorStyleTerminal :: ColorStyle Terminal
+instance colorSimpleTerminal :: ColorSimple Terminal
 ```
 
 We use ANSI color codes.
