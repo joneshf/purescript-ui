@@ -35,61 +35,6 @@ data Color
 The possible colors we can make.
 
 
-## Module Graphics.UI.String
-
-
-#### `textString`
-
-``` purescript
-instance textString :: Text String
-```
-
-
-#### `stringify`
-
-``` purescript
-stringify :: String -> String
-```
-
-We interpret `String` fairly easily here. It's just identity.
-
-
-## Module Graphics.UI.Terminal
-
-
-`Terminal` implements `Text` and `ColorStyle`.
-
-#### `Terminal`
-
-``` purescript
-newtype Terminal
-  = Terminal String
-```
-
-
-#### `runTerminal`
-
-``` purescript
-runTerminal :: Terminal -> String
-```
-
-
-#### `textTerminal`
-
-``` purescript
-instance textTerminal :: Text Terminal
-```
-
-
-#### `colorStyleTerminal`
-
-``` purescript
-instance colorStyleTerminal :: ColorStyle Terminal
-```
-
-We use ANSI color codes.
-
-
 ## Module Graphics.UI.HTML
 
 
@@ -101,6 +46,7 @@ data HTML
 ```
 
 We make an AST of `HTML`.
+Though it'd be nice if this existed somewhere else.
 
 #### `Head`
 
@@ -209,6 +155,59 @@ instance renderArray :: (Render h) => Render [h]
 ```
 
 We can render an array of things by `intercalat`ing a newline.
+
+
+## Module Graphics.UI.String
+
+
+#### `textString`
+
+``` purescript
+instance textString :: Text String
+```
+
+
+#### `stringify`
+
+``` purescript
+stringify :: String -> String
+```
+
+We interpret `String` fairly easily here. It's just identity.
+
+
+## Module Graphics.UI.Terminal
+
+
+#### `Terminal`
+
+``` purescript
+newtype Terminal
+  = Terminal String
+```
+
+
+#### `runTerminal`
+
+``` purescript
+runTerminal :: Terminal -> String
+```
+
+
+#### `textTerminal`
+
+``` purescript
+instance textTerminal :: Text Terminal
+```
+
+
+#### `colorStyleTerminal`
+
+``` purescript
+instance colorStyleTerminal :: ColorStyle Terminal
+```
+
+We use ANSI color codes.
 
 
 
