@@ -14,7 +14,7 @@ var paths = {
     src: 'src/**/*.purs',
     bowerSrc: 'bower_components/purescript-*/src/**/*.purs',
     dest: '',
-    docsDest: 'README.md',
+    docsDest: 'docs/README.md',
     exampleSrc: 'examples/**/*.purs',
     manifests: [
       'bower.json',
