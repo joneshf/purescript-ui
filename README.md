@@ -2,6 +2,9 @@
 
 ## Module Graphics.UI
 
+
+Here we specify the possible ways to build UI's. 
+
 #### `Text`
 
 ``` purescript
@@ -34,6 +37,7 @@ The possible colors we can make.
 
 ## Module Graphics.UI.String
 
+
 #### `textString`
 
 ``` purescript
@@ -51,6 +55,9 @@ We interpret `String` fairly easily here. It's just identity.
 
 
 ## Module Graphics.UI.Terminal
+
+
+`Terminal` implements `Text` and `ColorStyle`.
 
 #### `Terminal`
 
@@ -84,6 +91,7 @@ We use ANSI color codes.
 
 
 ## Module Graphics.UI.HTML
+
 
 #### `HTML`
 
