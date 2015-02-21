@@ -5,6 +5,7 @@ var gulp        = require('gulp')
   , filter      = require('gulp-filter')
   , git         = require('gulp-git')
   , purescript  = require('gulp-purescript')
+  , run         = require('gulp-run')
   , runSequence = require('run-sequence')
   , tagVersion  = require('gulp-tag-version')
   ;
@@ -14,6 +15,7 @@ var paths = {
     bowerSrc: 'bower_components/purescript-*/src/**/*.purs',
     dest: '',
     docsDest: 'README.md',
+    exampleSrc: 'examples/**/*.purs',
     manifests: [
       'bower.json',
       'package.json'
@@ -22,16 +24,17 @@ var paths = {
 
 var options = {
     compiler: {},
+    examples: {main: 'Examples.Graphics.UI.Terminal'},
     pscDocs: {}
 };
 
-var compile = function(compiler) {
-    var psc = compiler(options.compiler);
+var compile = function(compiler, src, options) {
+    var psc = compiler(options);
     psc.on('error', function(e) {
         console.error(e.message);
         psc.end();
     });
-    return gulp.src([paths.src, paths.bowerSrc])
+    return gulp.src([paths.src].concat(src).concat(paths.bowerSrc))
         .pipe(psc)
         .pipe(gulp.dest(paths.dest));
 };
@@ -70,11 +73,11 @@ gulp.task('bump-tag-patch', function() {
 });
 
 gulp.task('make', function() {
-    return compile(purescript.pscMake);
+    return compile(purescript.pscMake, [], options.compiler);
 });
 
 gulp.task('browser', function() {
-    return compile(purescript.psc);
+    return compile(purescript.psc, [], options.compiler);
 });
 
 gulp.task('docs', function() {
@@ -86,6 +89,11 @@ gulp.task('docs', function() {
     return gulp.src(paths.src)
       .pipe(pscDocs)
       .pipe(gulp.dest(paths.docsDest));
+});
+
+gulp.task('examples', function() {
+    return compile(purescript.psc, [paths.exampleSrc], options.examples)
+        .pipe(run('node'));
 });
 
 gulp.task('watch-browser', function() {

@@ -9,6 +9,7 @@
     "gulp-filter": "^2.0.2",
     "gulp-git": "^1.0.0",
     "gulp-purescript": "^0.1.2",
+    "gulp-run": "^1.6.6",
     "gulp-tag-version": "^1.2.1",
     "run-sequence": "^1.0.2"
   }
