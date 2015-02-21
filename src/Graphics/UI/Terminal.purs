@@ -4,6 +4,7 @@
 module Graphics.UI.Terminal where
 
   import Control.Monad.Eff
+
   import Debug.Trace
 
   import Graphics.UI

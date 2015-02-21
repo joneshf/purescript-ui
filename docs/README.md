@@ -99,6 +99,13 @@ instance textBodyTag :: Text BodyTag
 ```
 
 
+#### `printHTML`
+
+``` purescript
+printHTML :: forall eff. HTML -> Eff (trace :: Trace | eff) Unit
+```
+
+
 #### `indent`
 
 ``` purescript

@@ -3,7 +3,11 @@
 -}
 module Graphics.UI.HTML where
 
+  import Control.Monad.Eff
+
   import Data.Foldable
+
+  import Debug.Trace
 
   import Graphics.UI
 
@@ -24,6 +28,9 @@ module Graphics.UI.HTML where
 
   instance textBodyTag :: Text BodyTag where
     text = P
+
+  printHTML :: forall eff. HTML -> Eff (trace :: Trace | eff) Unit
+  printHTML = render 0 >>> trace
 
   -- | A little helper function to generate properly indented strings.
   -- | This should be done more efficiently though.

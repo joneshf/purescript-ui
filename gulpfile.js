@@ -25,11 +25,12 @@ var paths = {
 var options = {
     compiler: {},
     examples: {
-        terminal: {main: 'Examples.Graphics.UI.Terminal'},
-        html: {
-            modules: 'Examples.Graphics.UI.HTML',
-            output: 'examples/Examples/Graphics/UI/HTML/hello.js'
-        }
+        bodyTag: {
+            modules: 'Examples.Graphics.UI.BodyTag',
+            output: 'examples/Examples/Graphics/UI/BodyTag/hello.js'
+        },
+        html: {main: 'Examples.Graphics.UI.HTML'},
+        terminal: {main: 'Examples.Graphics.UI.Terminal'}
     },
     pscDocs: {}
 };
@@ -97,16 +98,22 @@ gulp.task('docs', function() {
       .pipe(gulp.dest(paths.docsDest));
 });
 
+gulp.task('examples-BodyTag', function() {
+    return compile(purescript.psc, [paths.exampleSrc], options.examples.bodyTag);
+});
+
+gulp.task('examples-HTML', function() {
+    return compile(purescript.psc, [paths.exampleSrc], options.examples.html)
+        .pipe(run('node'))
+        .pipe(run('cat > examples/Examples/Graphics/UI/HTML/index.html'));
+});
+
 gulp.task('examples-Terminal', function() {
     return compile(purescript.psc, [paths.exampleSrc], options.examples.terminal)
         .pipe(run('node'));
 });
 
-gulp.task('examples-HTML', function() {
-    return compile(purescript.psc, [paths.exampleSrc], options.examples.html);
-});
-
-gulp.task('examples', ['examples-HTML', 'examples-Terminal']);
+gulp.task('examples', ['examples-BodyTag', 'examples-HTML', 'examples-Terminal']);
 
 gulp.task('watch-browser', function() {
     gulp.watch(paths.src, ['browser', 'docs']);

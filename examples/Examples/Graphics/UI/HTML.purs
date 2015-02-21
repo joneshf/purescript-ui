@@ -2,7 +2,6 @@ module Examples.Graphics.UI.HTML where
 
   import Examples.Graphics.UI.Hello (hello)
 
-  import Graphics.UI.HTML
+  import Graphics.UI.HTML (printHTML)
 
-  greeting :: BodyTag
-  greeting = hello
+  main = printHTML hello
