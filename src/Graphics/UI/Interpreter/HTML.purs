@@ -5,18 +5,21 @@ module Graphics.UI.Interpreter.HTML where
 
   import Control.Monad.Eff (Eff())
 
+  import Data.Either (Either(..))
   import Data.Foldable (intercalate)
   import Data.Maybe (Maybe(..), fromMaybe)
+  import Data.Profunctor (dimap)
+  import Data.Tuple (Tuple(..), uncurry)
 
   import Debug.Trace (Trace(), trace)
 
-  import Graphics.UI
-    ( ColorName, color
-    , List, list
-    , Text, text
-    )
+  import qualified Graphics.UI as UI
   import Graphics.UI.Color (name2RGB)
   import Graphics.UI.Color.RGB (RGB(..))
+
+  import Optic.Core ((?~), (..), Lens(), Prism(), LensP(), PrismP(), prism)
+  import Optic.Refractor.Lens (_1)
+  import Optic.Totally
 
   -- | We make an AST of `HTML`.
   -- | Though it'd be nice if this existed somewhere else.
@@ -33,36 +36,63 @@ module Graphics.UI.Interpreter.HTML where
 
   data ListItem = Li Style BodyTag
 
-  newtype Style = Style {color :: Maybe RGB}
-
-  instance colorNameBody :: ColorName Body where
-    color c (Body (Style style) tags) =
-      Body (Style {color: Just $ name2RGB c}) tags
-
-  instance colorNameBodyTag :: ColorName BodyTag where
-    color c (P  (Style style) str) = P  (Style {color: Just $ name2RGB c}) str
-    color c (Ul (Style style) lis) = Ul (Style {color: Just $ name2RGB c}) lis
-
-  instance colorNameHTML :: ColorName HTML where
-    color c (HTML head body) = HTML head $ color c body
-
-  instance colorNameListItem :: ColorName ListItem where
-    color c (Li (Style style) tag) = Li (Style {color: Just $ name2RGB c}) tag
-
-  instance listBodyTag :: List BodyTag where
-    list = Ul noStyle <<< ((Li noStyle) <$>)
-
-  instance textHTML :: Text HTML where
-    text str = HTML (Head $ Title "") (Body noStyle [text str])
-
-  instance textBodyTag :: Text BodyTag where
-    text = P noStyle
+  newtype Style = Style StyleRec
+  type StyleRec = {color :: Maybe RGB}
 
   noStyle :: Style
   noStyle = Style {color: Nothing}
 
   printHTML :: forall eff. HTML -> Eff (trace :: Trace | eff) Unit
   printHTML = render 0 >>> trace
+
+  _P :: forall a. Prism BodyTag BodyTag (Tuple Style String) a
+  _P = prism (\_ -> P noStyle "") (\bt -> case bt of
+    P  style string -> Right $ Tuple style string
+    _               -> Left bt)
+
+  _Ul :: forall a. Prism BodyTag BodyTag (Tuple Style [ListItem]) a
+  _Ul = prism (\_ -> Ul noStyle []) (\bt -> case bt of
+    Ul style items -> Right $ Tuple style items
+    _              -> Left bt)
+
+  _Style :: LensP Style StyleRec
+  _Style f (Style rec) = f rec <#> Style
+
+  color :: forall a b. LensP {color :: a | _} a
+  color f o = f o.color <#> o{color = _}
+
+  instance totallyBodyTag :: Totally BodyTag where
+    totally = undefined
+
+  foreign import undefined :: forall a. a
+
+  instance colorNameBody :: UI.ColorName Body where
+    color c (Body (Style style) tags) =
+      Body (Style {color: Just $ name2RGB c}) tags
+
+  instance colorNameBodyTag :: UI.ColorName BodyTag where
+    color c = totally
+      # like _P  ((uncurry P) <<< setStyle c)
+      # like _Ul ((uncurry Ul) <<< setStyle c)
+
+  -- Apparently something goes wrong when in an instance,
+  -- and the type signature is monomorphic
+  setStyle c = _1.._Style..color ?~ name2RGB c
+
+  instance colorNameHTML :: UI.ColorName HTML where
+    color c (HTML head body) = HTML head $ UI.color c body
+
+  instance colorNameListItem :: UI.ColorName ListItem where
+    color c (Li (Style style) tag) = Li (Style {color: Just $ name2RGB c}) tag
+
+  instance listBodyTag :: UI.List BodyTag where
+    list = Ul noStyle <<< ((Li noStyle) <$>)
+
+  instance textHTML :: UI.Text HTML where
+    text str = HTML (Head $ Title "") (Body noStyle [UI.text str])
+
+  instance textBodyTag :: UI.Text BodyTag where
+    text = P noStyle
 
   -- | A little helper function to generate properly indented strings.
   -- | This should be done more efficiently though.

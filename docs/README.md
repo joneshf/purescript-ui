@@ -58,6 +58,62 @@ data Name
 The possible colors we can make.
 Based on the first six stages of color in language by Berlin and Kay.
 
+#### `PrismP`
+
+``` purescript
+type PrismP s a = forall f p. (Applicative f, Choice p) => p a (f a) -> p s (f s)
+```
+
+
+#### `_Black`
+
+``` purescript
+_Black :: PrismP Name Unit
+```
+
+
+#### `_White`
+
+``` purescript
+_White :: PrismP Name Unit
+```
+
+
+#### `_Red`
+
+``` purescript
+_Red :: PrismP Name Unit
+```
+
+
+#### `_Green`
+
+``` purescript
+_Green :: PrismP Name Unit
+```
+
+
+#### `_Yellow`
+
+``` purescript
+_Yellow :: PrismP Name Unit
+```
+
+
+#### `_Blue`
+
+``` purescript
+_Blue :: PrismP Name Unit
+```
+
+
+#### `_Purple`
+
+``` purescript
+_Purple :: PrismP Name Unit
+```
+
+
 
 ## Module Graphics.UI.Color.RGB
 
@@ -65,7 +121,49 @@ Based on the first six stages of color in language by Berlin and Kay.
 
 ``` purescript
 newtype RGB
-  = RGB { blue :: Number, green :: Number, red :: Number }
+  = RGB RGBRec
+```
+
+
+#### `RGBRec`
+
+``` purescript
+type RGBRec = { blue :: Number, green :: Number, red :: Number }
+```
+
+
+#### `LensP`
+
+``` purescript
+type LensP s a = forall f. (Functor f) => (a -> f a) -> s -> f s
+```
+
+
+#### `_RGB`
+
+``` purescript
+_RGB :: LensP RGB RGBRec
+```
+
+
+#### `red`
+
+``` purescript
+red :: LensP { red :: Number | _ } Number
+```
+
+
+#### `green`
+
+``` purescript
+green :: LensP { green :: Number | _ } Number
+```
+
+
+#### `blue`
+
+``` purescript
+blue :: LensP { blue :: Number | _ } Number
 ```
 
 
@@ -127,56 +225,14 @@ data ListItem
 
 ``` purescript
 newtype Style
-  = Style { color :: Maybe RGB }
+  = Style StyleRec
 ```
 
 
-#### `colorNameBody`
+#### `StyleRec`
 
 ``` purescript
-instance colorNameBody :: ColorName Body
-```
-
-
-#### `colorNameBodyTag`
-
-``` purescript
-instance colorNameBodyTag :: ColorName BodyTag
-```
-
-
-#### `colorNameHTML`
-
-``` purescript
-instance colorNameHTML :: ColorName HTML
-```
-
-
-#### `colorNameListItem`
-
-``` purescript
-instance colorNameListItem :: ColorName ListItem
-```
-
-
-#### `listBodyTag`
-
-``` purescript
-instance listBodyTag :: List BodyTag
-```
-
-
-#### `textHTML`
-
-``` purescript
-instance textHTML :: Text HTML
-```
-
-
-#### `textBodyTag`
-
-``` purescript
-instance textBodyTag :: Text BodyTag
+type StyleRec = { color :: Maybe RGB }
 ```
 
 
@@ -191,6 +247,97 @@ noStyle :: Style
 
 ``` purescript
 printHTML :: forall eff. HTML -> Eff (trace :: Trace | eff) Unit
+```
+
+
+#### `_P`
+
+``` purescript
+_P :: forall a. Prism BodyTag BodyTag (Tuple Style String) a
+```
+
+
+#### `_Ul`
+
+``` purescript
+_Ul :: forall a. Prism BodyTag BodyTag (Tuple Style [ListItem]) a
+```
+
+
+#### `_Style`
+
+``` purescript
+_Style :: LensP Style StyleRec
+```
+
+
+#### `color`
+
+``` purescript
+color :: forall a b. LensP { color :: a | _ } a
+```
+
+
+#### `totallyBodyTag`
+
+``` purescript
+instance totallyBodyTag :: Totally BodyTag
+```
+
+
+#### `undefined`
+
+``` purescript
+undefined :: forall a. a
+```
+
+
+#### `colorNameBody`
+
+``` purescript
+instance colorNameBody :: UI.ColorName Body
+```
+
+
+#### `colorNameBodyTag`
+
+``` purescript
+instance colorNameBodyTag :: UI.ColorName BodyTag
+```
+
+
+#### `colorNameHTML`
+
+``` purescript
+instance colorNameHTML :: UI.ColorName HTML
+```
+
+
+#### `colorNameListItem`
+
+``` purescript
+instance colorNameListItem :: UI.ColorName ListItem
+```
+
+
+#### `listBodyTag`
+
+``` purescript
+instance listBodyTag :: UI.List BodyTag
+```
+
+
+#### `textHTML`
+
+``` purescript
+instance textHTML :: UI.Text HTML
+```
+
+
+#### `textBodyTag`
+
+``` purescript
+instance textBodyTag :: UI.Text BodyTag
 ```
 
 
