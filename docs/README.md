@@ -2,9 +2,6 @@
 
 ## Module Graphics.UI
 
-
-Here we specify the possible ways to build UI's. 
-
 #### `Text`
 
 ``` purescript
@@ -46,10 +43,10 @@ class List lang where
   list :: [lang] -> lang
 ```
 
+A simple list of things.
 
 
 ## Module Graphics.UI.HTML
-
 
 #### `HTML`
 
@@ -253,7 +250,6 @@ instance renderRGB :: Render RGB
 
 ## Module Graphics.UI.String
 
-
 #### `textString`
 
 ``` purescript
@@ -271,7 +267,6 @@ We interpret `String` fairly easily here. It's just identity.
 
 
 ## Module Graphics.UI.Terminal
-
 
 #### `Terminal`
 
@@ -312,8 +307,6 @@ We use ANSI color codes.
 
 
 ## Module Graphics.UI.Thermite
-
-
 
 #### `textThermiteHtml`
 

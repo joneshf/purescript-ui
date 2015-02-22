@@ -1,4 +1,6 @@
-module Examples.Graphics.UI.Thermite where
+{- |  We interpret the `hello` UI as a `Thermite` component.
+-}
+module Examples.Graphics.UI.Hello.Thermite where
 
   import Graphics.UI.Thermite ()
 

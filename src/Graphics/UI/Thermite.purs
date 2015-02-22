@@ -12,4 +12,5 @@ module Graphics.UI.Thermite where
     text str = T.p' [T.text str]
 
   instance textThermiteComponentClass :: Text (T.ComponentClass props eff) where
-    text str = T.createClass $ T.simpleSpec {foo: unit} (\_ _ -> pure unit) (\_ _ _ -> text str)
+    text s =
+      T.createClass $ T.simpleSpec unit (\_ _ -> pure unit) (\_ _ _ -> text s)

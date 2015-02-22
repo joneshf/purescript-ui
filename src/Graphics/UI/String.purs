@@ -3,7 +3,7 @@
 -}
 module Graphics.UI.String where
 
-  import Graphics.UI
+  import Graphics.UI (Text, text)
 
   instance textString :: Text String where
     text = id

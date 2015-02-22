@@ -16,18 +16,28 @@ var paths = {
     dest: '',
     docsDest: 'docs/README.md',
     examples: {
-        bodyTag: [ 'examples/Examples/Graphics/UI/BodyTag.purs'
-                 , 'examples/Examples/Graphics/UI/Hello.purs'
-                 ],
-        html: [ 'examples/Examples/Graphics/UI/HTML.purs'
-              , 'examples/Examples/Graphics/UI/Hello.purs'
-              ],
-        thermite: [ 'examples/Examples/Graphics/UI/Thermite.purs'
+        colorful: {
+            html: [ 'examples/Examples/Graphics/UI/Colorful/HTML.purs'
+                  , 'examples/Examples/Graphics/UI/Colorful.purs'
+                  ],
+            terminal: [ 'examples/Examples/Graphics/UI/Colorful/Terminal.purs'
+                      , 'examples/Examples/Graphics/UI/Colorful.purs'
+                      ]
+        },
+        hello: {
+            bodyTag: [ 'examples/Examples/Graphics/UI/Hello/BodyTag.purs'
+                     , 'examples/Examples/Graphics/UI/Hello.purs'
+                     ],
+            html: [ 'examples/Examples/Graphics/UI/Hello/HTML.purs'
                   , 'examples/Examples/Graphics/UI/Hello.purs'
                   ],
-        terminal: [ 'examples/Examples/Graphics/UI/Terminal.purs'
-                  , 'examples/Examples/Graphics/UI/Hello.purs'
-                  ]
+            thermite: [ 'examples/Examples/Graphics/UI/Hello/Thermite.purs'
+                      , 'examples/Examples/Graphics/UI/Hello.purs'
+                      ],
+            terminal: [ 'examples/Examples/Graphics/UI/Hello/Terminal.purs'
+                      , 'examples/Examples/Graphics/UI/Hello.purs'
+                      ]
+        }
     },
     exampleSrc: 'examples/**/*.purs',
     manifests: [
@@ -39,17 +49,23 @@ var paths = {
 var options = {
     compiler: {},
     examples: {
-        bodyTag: {
-            modules: 'Examples.Graphics.UI.BodyTag',
-            output: 'examples/Examples/Graphics/UI/BodyTag/hello.js'
+        colorful: {
+            html: {main: 'Examples.Graphics.UI.Colorful.HTML'},
+            terminal: {main: 'Examples.Graphics.UI.Colorful.Terminal'}
         },
-        html: {main: 'Examples.Graphics.UI.HTML'},
-        thermite: {
-            modules: 'Examples.Graphics.UI.Thermite',
-            main: 'Examples.Graphics.UI.Thermite',
-            output: 'examples/Examples/Graphics/UI/Thermite/hello.js'
-        },
-        terminal: {main: 'Examples.Graphics.UI.Terminal'}
+        hello: {
+            bodyTag: {
+                modules: 'Examples.Graphics.UI.Hello.BodyTag',
+                output: 'examples/Examples/Graphics/UI/Hello/BodyTag/hello.js'
+            },
+            html: {main: 'Examples.Graphics.UI.Hello.HTML'},
+            thermite: {
+                modules: 'Examples.Graphics.UI.Hello.Thermite',
+                main: 'Examples.Graphics.UI.Hello.Thermite',
+                output: 'examples/Examples/Graphics/UI/Hello/Thermite/hello.js'
+            },
+            terminal: {main: 'Examples.Graphics.UI.Hello.Terminal'}
+        }
     },
     pscDocs: {}
 };
@@ -117,29 +133,42 @@ gulp.task('docs', function() {
       .pipe(gulp.dest(paths.docsDest));
 });
 
-gulp.task('examples-BodyTag', function() {
-    return compile(purescript.psc, paths.examples.bodyTag, options.examples.bodyTag);
-});
-
-gulp.task('examples-HTML', function() {
-    return compile(purescript.psc, paths.examples.html, options.examples.html)
+gulp.task('examples-Colorful-HTML', function() {
+    return compile(purescript.psc, paths.examples.colorful.html, options.examples.colorful.html)
         .pipe(run('node'))
-        .pipe(run('cat > examples/Examples/Graphics/UI/HTML/index.html'));
+        .pipe(run('cat > examples/Examples/Graphics/UI/Colorful/HTML/index.html'));
 });
 
-gulp.task('examples-Thermite', function() {
-    return compile(purescript.psc, paths.examples.thermite, options.examples.thermite);
-});
-
-gulp.task('examples-Terminal', function() {
-    return compile(purescript.psc, paths.examples.terminal, options.examples.terminal)
+gulp.task('examples-Colorful-Terminal', function() {
+    return compile(purescript.psc, paths.examples.colorful.terminal, options.examples.colorful.terminal)
         .pipe(run('node'));
 });
 
-gulp.task('examples', [ 'examples-BodyTag'
-                      , 'examples-HTML'
-                      , 'examples-Thermite'
-                      , 'examples-Terminal'
+gulp.task('examples-Hello-BodyTag', function() {
+    return compile(purescript.psc, paths.examples.hello.bodyTag, options.examples.hello.bodyTag);
+});
+
+gulp.task('examples-Hello-HTML', function() {
+    return compile(purescript.psc, paths.examples.hello.html, options.examples.hello.html)
+        .pipe(run('node'))
+        .pipe(run('cat > examples/Examples/Graphics/UI/Hello/HTML/index.html'));
+});
+
+gulp.task('examples-Hello-Terminal', function() {
+    return compile(purescript.psc, paths.examples.hello.terminal, options.examples.hello.terminal)
+        .pipe(run('node'));
+});
+
+gulp.task('examples-Hello-Thermite', function() {
+    return compile(purescript.psc, paths.examples.hello.thermite, options.examples.hello.thermite);
+});
+
+gulp.task('examples', [ 'examples-Colorful-HTML'
+                      , 'examples-Colorful-Terminal'
+                      , 'examples-Hello-BodyTag'
+                      , 'examples-Hello-HTML'
+                      , 'examples-Hello-Terminal'
+                      , 'examples-Hello-Thermite'
                       ]);
 
 gulp.task('watch-browser', function() {

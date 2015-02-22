@@ -3,11 +3,11 @@
 -}
 module Graphics.UI.Terminal where
 
-  import Control.Monad.Eff
+  import Control.Monad.Eff (Eff())
 
-  import Debug.Trace
+  import Debug.Trace (Trace(), trace)
 
-  import Graphics.UI
+  import Graphics.UI (Text, text, ColorSimple, color, Color(..))
 
   newtype Terminal = Terminal String
 

@@ -1,4 +1,6 @@
-module Examples.Graphics.UI.HTML where
+{- |  We interpret the `hello` UI as a full HTML file
+-}
+module Examples.Graphics.UI.Hello.HTML where
 
   import Examples.Graphics.UI.Hello (hello)
 

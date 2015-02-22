@@ -19,5 +19,6 @@ module Graphics.UI where
              | Blue
              | Purple
 
+  -- | A simple list of things.
   class List lang where
     list :: [lang] -> lang
