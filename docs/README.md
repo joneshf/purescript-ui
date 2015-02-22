@@ -311,4 +311,23 @@ instance colorSimpleTerminal :: ColorSimple Terminal
 We use ANSI color codes.
 
 
+## Module Graphics.UI.Thermite
+
+
+
+#### `textThermiteHtml`
+
+``` purescript
+instance textThermiteHtml :: Text (T.Html action)
+```
+
+
+#### `textThermiteComponentClass`
+
+``` purescript
+instance textThermiteComponentClass :: Text (T.ComponentClass props eff)
+```
+
+
+
 

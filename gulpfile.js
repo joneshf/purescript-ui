@@ -15,6 +15,20 @@ var paths = {
     bowerSrc: 'bower_components/purescript-*/src/**/*.purs',
     dest: '',
     docsDest: 'docs/README.md',
+    examples: {
+        bodyTag: [ 'examples/Examples/Graphics/UI/BodyTag.purs'
+                 , 'examples/Examples/Graphics/UI/Hello.purs'
+                 ],
+        html: [ 'examples/Examples/Graphics/UI/HTML.purs'
+              , 'examples/Examples/Graphics/UI/Hello.purs'
+              ],
+        thermite: [ 'examples/Examples/Graphics/UI/Thermite.purs'
+                  , 'examples/Examples/Graphics/UI/Hello.purs'
+                  ],
+        terminal: [ 'examples/Examples/Graphics/UI/Terminal.purs'
+                  , 'examples/Examples/Graphics/UI/Hello.purs'
+                  ]
+    },
     exampleSrc: 'examples/**/*.purs',
     manifests: [
       'bower.json',
@@ -30,6 +44,11 @@ var options = {
             output: 'examples/Examples/Graphics/UI/BodyTag/hello.js'
         },
         html: {main: 'Examples.Graphics.UI.HTML'},
+        thermite: {
+            modules: 'Examples.Graphics.UI.Thermite',
+            main: 'Examples.Graphics.UI.Thermite',
+            output: 'examples/Examples/Graphics/UI/Thermite/hello.js'
+        },
         terminal: {main: 'Examples.Graphics.UI.Terminal'}
     },
     pscDocs: {}
@@ -99,21 +118,29 @@ gulp.task('docs', function() {
 });
 
 gulp.task('examples-BodyTag', function() {
-    return compile(purescript.psc, [paths.exampleSrc], options.examples.bodyTag);
+    return compile(purescript.psc, paths.examples.bodyTag, options.examples.bodyTag);
 });
 
 gulp.task('examples-HTML', function() {
-    return compile(purescript.psc, [paths.exampleSrc], options.examples.html)
+    return compile(purescript.psc, paths.examples.html, options.examples.html)
         .pipe(run('node'))
         .pipe(run('cat > examples/Examples/Graphics/UI/HTML/index.html'));
 });
 
+gulp.task('examples-Thermite', function() {
+    return compile(purescript.psc, paths.examples.thermite, options.examples.thermite);
+});
+
 gulp.task('examples-Terminal', function() {
-    return compile(purescript.psc, [paths.exampleSrc], options.examples.terminal)
+    return compile(purescript.psc, paths.examples.terminal, options.examples.terminal)
         .pipe(run('node'));
 });
 
-gulp.task('examples', ['examples-BodyTag', 'examples-HTML', 'examples-Terminal']);
+gulp.task('examples', [ 'examples-BodyTag'
+                      , 'examples-HTML'
+                      , 'examples-Thermite'
+                      , 'examples-Terminal'
+                      ]);
 
 gulp.task('watch-browser', function() {
     gulp.watch(paths.src, ['browser', 'docs']);

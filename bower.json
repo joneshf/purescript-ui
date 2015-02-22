@@ -4,6 +4,7 @@
   "description": "PureScript building blocks for UI.",
   "license": "MIT",
   "dependencies": {
-    "purescript-foldable-traversable": "~0.3.0"
+    "purescript-foldable-traversable": "~0.3.0",
+    "purescript-thermite": "~0.5.2"
   }
 }
