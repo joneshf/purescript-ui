@@ -135,8 +135,7 @@ gulp.task('docs', function() {
 
 gulp.task('examples-Colorful-HTML', function() {
     return compile(purescript.psc, paths.examples.colorful.html, options.examples.colorful.html)
-        .pipe(run('node'))
-        .pipe(run('cat > examples/Examples/Graphics/UI/Colorful/HTML/index.html'));
+        .pipe(run('node | cat > examples/Examples/Graphics/UI/Colorful/HTML/index.html'));
 });
 
 gulp.task('examples-Colorful-Terminal', function() {
@@ -150,8 +149,7 @@ gulp.task('examples-Hello-BodyTag', function() {
 
 gulp.task('examples-Hello-HTML', function() {
     return compile(purescript.psc, paths.examples.hello.html, options.examples.hello.html)
-        .pipe(run('node'))
-        .pipe(run('cat > examples/Examples/Graphics/UI/Hello/HTML/index.html'));
+        .pipe(run('node | cat > examples/Examples/Graphics/UI/Hello/HTML/index.html'));
 });
 
 gulp.task('examples-Hello-Terminal', function() {
