@@ -1,4 +1,4 @@
-module Graphics.UI.Thermite where
+module Graphics.UI.Interpreter.Thermite where
 
   import Graphics.UI
     (Text, text)

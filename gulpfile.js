@@ -39,7 +39,6 @@ var paths = {
                       ]
         }
     },
-    exampleSrc: 'examples/**/*.purs',
     manifests: [
       'bower.json',
       'package.json'

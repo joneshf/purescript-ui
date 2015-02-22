@@ -1,13 +1,14 @@
 {- | `Terminal` implements `Text` and `ColorSimple`.
       This is an ANSI Terminal interpreter.
 -}
-module Graphics.UI.Terminal where
+module Graphics.UI.Interpreter.Terminal where
 
   import Control.Monad.Eff (Eff())
 
   import Debug.Trace (Trace(), trace)
 
-  import Graphics.UI (Text, text, ColorSimple, color, Color(..))
+  import Graphics.UI (Text, text, ColorSimple, color)
+  import Graphics.UI.Color (Color(..))
 
   newtype Terminal = Terminal String
 

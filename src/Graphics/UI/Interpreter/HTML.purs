@@ -1,7 +1,7 @@
 {- | `HTML` implements `Text`.
       It should also implement `ColorStyle`.
 -}
-module Graphics.UI.HTML where
+module Graphics.UI.Interpreter.HTML where
 
   import Control.Monad.Eff (Eff())
 
@@ -11,11 +11,11 @@ module Graphics.UI.HTML where
   import Debug.Trace (Trace(), trace)
 
   import Graphics.UI
-    ( Color(..)
-    , ColorSimple, color
+    ( ColorSimple, color
     , List, list
     , Text, text
     )
+  import Graphics.UI.Color (Color(..))
 
   -- | We make an AST of `HTML`.
   -- | Though it'd be nice if this existed somewhere else.
@@ -45,6 +45,10 @@ module Graphics.UI.HTML where
   color2RGB Blue   = RGB {red: 0,   green: 0,   blue: 255}
   color2RGB Purple = RGB {red: 255, green: 0,   blue: 255}
 
+  instance colorSimpleBody :: ColorSimple Body where
+    color c (Body (Style style) tags) =
+      Body (Style {color: Just $ color2RGB c}) tags
+
   instance colorSimpleBodyTag :: ColorSimple BodyTag where
     color c (P  (Style style) str) = P  (Style {color: Just $ color2RGB c}) str
     color c (Ul (Style style) lis) = Ul (Style {color: Just $ color2RGB c}) lis
@@ -52,9 +56,8 @@ module Graphics.UI.HTML where
   instance colorSimpleHTML :: ColorSimple HTML where
     color c (HTML head body) = HTML head $ color c body
 
-  instance colorSimpleBody :: ColorSimple Body where
-    color c (Body (Style style) tags) =
-      Body (Style {color: Just $ color2RGB c}) tags
+  instance colorSimpleListItem :: ColorSimple ListItem where
+    color c (Li (Style style) tag) = Li (Style {color: Just $ color2RGB c}) tag
 
   instance listBodyTag :: List BodyTag where
     list = Ul noStyle <<< ((Li noStyle) <$>)

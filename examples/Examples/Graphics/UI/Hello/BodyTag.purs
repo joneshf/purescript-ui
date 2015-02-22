@@ -4,7 +4,7 @@ module Examples.Graphics.UI.Hello.BodyTag where
 
   import Examples.Graphics.UI.Hello (hello)
 
-  import Graphics.UI.HTML
+  import Graphics.UI.Interpreter.HTML
 
   greeting :: BodyTag
   greeting = hello

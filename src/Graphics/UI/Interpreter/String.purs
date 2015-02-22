@@ -1,7 +1,7 @@
 {- | `String` can only implements `Text`.
       There's no way to `Color` a raw string.
 -}
-module Graphics.UI.String where
+module Graphics.UI.Interpreter.String where
 
   import Graphics.UI (Text, text)
 

@@ -2,7 +2,7 @@
 -}
 module Examples.Graphics.UI.Hello.Thermite where
 
-  import Graphics.UI.Thermite ()
+  import Graphics.UI.Interpreter.Thermite ()
 
   import Examples.Graphics.UI.Hello (hello)
 

@@ -20,6 +20,18 @@ class ColorSimple lang where
 
 We can color the representation.
 
+#### `List`
+
+``` purescript
+class List lang where
+  list :: [lang] -> lang
+```
+
+A simple list of things.
+
+
+## Module Graphics.UI.Color
+
 #### `Color`
 
 ``` purescript
@@ -36,17 +48,8 @@ data Color
 The possible colors we can make.
 Based on the first six stages of color in language by Berlin and Kay.
 
-#### `List`
 
-``` purescript
-class List lang where
-  list :: [lang] -> lang
-```
-
-A simple list of things.
-
-
-## Module Graphics.UI.HTML
+## Module Graphics.UI.Interpreter.HTML
 
 #### `HTML`
 
@@ -122,6 +125,13 @@ color2RGB :: Color -> RGB
 ```
 
 
+#### `colorSimpleBody`
+
+``` purescript
+instance colorSimpleBody :: ColorSimple Body
+```
+
+
 #### `colorSimpleBodyTag`
 
 ``` purescript
@@ -136,10 +146,10 @@ instance colorSimpleHTML :: ColorSimple HTML
 ```
 
 
-#### `colorSimpleBody`
+#### `colorSimpleListItem`
 
 ``` purescript
-instance colorSimpleBody :: ColorSimple Body
+instance colorSimpleListItem :: ColorSimple ListItem
 ```
 
 
@@ -269,7 +279,7 @@ instance renderRGB :: Render RGB
 
 
 
-## Module Graphics.UI.String
+## Module Graphics.UI.Interpreter.String
 
 #### `textString`
 
@@ -287,7 +297,7 @@ stringify :: String -> String
 We interpret `String` fairly easily here. It's just identity.
 
 
-## Module Graphics.UI.Terminal
+## Module Graphics.UI.Interpreter.Terminal
 
 #### `Terminal`
 
@@ -327,7 +337,7 @@ instance colorSimpleTerminal :: ColorSimple Terminal
 We use ANSI color codes.
 
 
-## Module Graphics.UI.Thermite
+## Module Graphics.UI.Interpreter.Thermite
 
 #### `textThermiteHtml`
 
