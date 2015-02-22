@@ -77,8 +77,8 @@ newtype Title
 #### `Body`
 
 ``` purescript
-newtype Body
-  = Body [BodyTag]
+data Body
+  = Body Style [BodyTag]
 ```
 
 
@@ -122,6 +122,34 @@ color2RGB :: Color -> RGB
 ```
 
 
+#### `colorSimpleBodyTag`
+
+``` purescript
+instance colorSimpleBodyTag :: ColorSimple BodyTag
+```
+
+
+#### `colorSimpleHTML`
+
+``` purescript
+instance colorSimpleHTML :: ColorSimple HTML
+```
+
+
+#### `colorSimpleBody`
+
+``` purescript
+instance colorSimpleBody :: ColorSimple Body
+```
+
+
+#### `listBodyTag`
+
+``` purescript
+instance listBodyTag :: List BodyTag
+```
+
+
 #### `textHTML`
 
 ``` purescript
@@ -133,13 +161,6 @@ instance textHTML :: Text HTML
 
 ``` purescript
 instance textBodyTag :: Text BodyTag
-```
-
-
-#### `listBodyTag`
-
-``` purescript
-instance listBodyTag :: List BodyTag
 ```
 
 

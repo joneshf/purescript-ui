@@ -6,12 +6,13 @@ module Graphics.UI.HTML where
   import Control.Monad.Eff (Eff())
 
   import Data.Foldable (intercalate)
-  import Data.Maybe (Maybe(..), maybe)
+  import Data.Maybe (Maybe(..), fromMaybe)
 
   import Debug.Trace (Trace(), trace)
 
   import Graphics.UI
     ( Color(..)
+    , ColorSimple, color
     , List, list
     , Text, text
     )
@@ -24,7 +25,7 @@ module Graphics.UI.HTML where
 
   newtype Title = Title String
 
-  newtype Body = Body [BodyTag]
+  data Body = Body Style [BodyTag]
 
   data BodyTag = P  Style String
                | Ul Style [ListItem]
@@ -44,14 +45,25 @@ module Graphics.UI.HTML where
   color2RGB Blue   = RGB {red: 0,   green: 0,   blue: 255}
   color2RGB Purple = RGB {red: 255, green: 0,   blue: 255}
 
-  instance textHTML :: Text HTML where
-    text str = HTML (Head $ Title "") (Body [text str])
+  instance colorSimpleBodyTag :: ColorSimple BodyTag where
+    color c (P  (Style style) str) = P  (Style {color: Just $ color2RGB c}) str
+    color c (Ul (Style style) lis) = Ul (Style {color: Just $ color2RGB c}) lis
 
-  instance textBodyTag :: Text BodyTag where
-    text = P noStyle
+  instance colorSimpleHTML :: ColorSimple HTML where
+    color c (HTML head body) = HTML head $ color c body
+
+  instance colorSimpleBody :: ColorSimple Body where
+    color c (Body (Style style) tags) =
+      Body (Style {color: Just $ color2RGB c}) tags
 
   instance listBodyTag :: List BodyTag where
     list = Ul noStyle <<< ((Li noStyle) <$>)
+
+  instance textHTML :: Text HTML where
+    text str = HTML (Head $ Title "") (Body noStyle [text str])
+
+  instance textBodyTag :: Text BodyTag where
+    text = P noStyle
 
   noStyle :: Style
   noStyle = Style {color: Nothing}
@@ -94,11 +106,11 @@ module Graphics.UI.HTML where
                           ++ indent n "</title>"
 
   instance renderBody :: Render Body where
-    render n (Body tags) = indent n "<body>"
-                        ++ "\n"
-                        ++ render (n + 2) tags
-                        ++ "\n"
-                        ++ indent n "</body>"
+    render n (Body style tags) = indent n "<body" ++ render 0 style ++ ">"
+                              ++ "\n"
+                              ++ render (n + 2) tags
+                              ++ "\n"
+                              ++ indent n "</body>"
 
   instance renderBodyTag :: Render BodyTag where
     render n (P style str) = indent n "<p" ++ render 0 style ++ ">"
@@ -128,8 +140,10 @@ module Graphics.UI.HTML where
     render n hs = intercalate "\n" $ render n <$> hs
 
   instance renderStyle :: Render Style where
-    render _ (Style style) = maybe "" (render 0) style.color
+    render _ (Style style) = fromMaybe "" do
+      c <- render 0 <$> style.color
+      pure $ " style=\"" ++ c ++ "\""
 
   instance renderRGB :: Render RGB where
     render _ (RGB {red = r, green = g, blue = b}) =
-      "rgb(" ++ show r ++ ", " ++ show g ++ ", " ++ show b ++ ")"
+      "color: rgb(" ++ show r ++ ", " ++ show g ++ ", " ++ show b ++ ");"
