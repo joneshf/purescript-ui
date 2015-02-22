@@ -28,4 +28,4 @@ module Graphics.UI.Terminal where
     color Green  (Terminal str) = Terminal $ "\x1b[32m" ++ str ++ "\x1b[39;49m"
     color Yellow (Terminal str) = Terminal $ "\x1b[33m" ++ str ++ "\x1b[39;49m"
     color Blue   (Terminal str) = Terminal $ "\x1b[34m" ++ str ++ "\x1b[39;49m"
-    color Brown  (Terminal str) = Terminal $ "\x1b[33m" ++ str ++ "\x1b[39;49m"
+    color Purple (Terminal str) = Terminal $ "\x1b[35m" ++ str ++ "\x1b[39;49m"

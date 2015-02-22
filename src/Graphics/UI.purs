@@ -17,4 +17,7 @@ module Graphics.UI where
              | Green
              | Yellow
              | Blue
-             | Brown
+             | Purple
+
+  class List lang where
+    list :: [lang] -> lang

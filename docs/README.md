@@ -33,11 +33,19 @@ data Color
   | Green 
   | Yellow 
   | Blue 
-  | Brown 
+  | Purple 
 ```
 
 The possible colors we can make.
 Based on the first six stages of color in language by Berlin and Kay.
+
+#### `List`
+
+``` purescript
+class List lang where
+  list :: [lang] -> lang
+```
+
 
 
 ## Module Graphics.UI.HTML
@@ -80,8 +88,40 @@ newtype Body
 #### `BodyTag`
 
 ``` purescript
-newtype BodyTag
-  = P String
+data BodyTag
+  = P Style String
+  | Ul Style [ListItem]
+```
+
+
+#### `ListItem`
+
+``` purescript
+data ListItem
+  = Li Style BodyTag
+```
+
+
+#### `Style`
+
+``` purescript
+newtype Style
+  = Style { color :: Maybe RGB }
+```
+
+
+#### `RGB`
+
+``` purescript
+newtype RGB
+  = RGB { blue :: Number, green :: Number, red :: Number }
+```
+
+
+#### `color2RGB`
+
+``` purescript
+color2RGB :: Color -> RGB
 ```
 
 
@@ -96,6 +136,20 @@ instance textHTML :: Text HTML
 
 ``` purescript
 instance textBodyTag :: Text BodyTag
+```
+
+
+#### `listBodyTag`
+
+``` purescript
+instance listBodyTag :: List BodyTag
+```
+
+
+#### `noStyle`
+
+``` purescript
+noStyle :: Style
 ```
 
 
@@ -159,6 +213,13 @@ instance renderBodyTag :: Render BodyTag
 ```
 
 
+#### `renderListItem`
+
+``` purescript
+instance renderListItem :: Render ListItem
+```
+
+
 #### `renderString`
 
 ``` purescript
@@ -173,7 +234,21 @@ We can also render `String`s.
 instance renderArray :: (Render h) => Render [h]
 ```
 
-We can render an array of things by `intercalat`ing a newline.
+We can render an array of things by `intercalate`ing a newline.
+
+#### `renderStyle`
+
+``` purescript
+instance renderStyle :: Render Style
+```
+
+
+#### `renderRGB`
+
+``` purescript
+instance renderRGB :: Render RGB
+```
+
 
 
 ## Module Graphics.UI.String
