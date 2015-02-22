@@ -11,11 +11,12 @@ module Graphics.UI.Interpreter.HTML where
   import Debug.Trace (Trace(), trace)
 
   import Graphics.UI
-    ( ColorSimple, color
+    ( ColorName, color
     , List, list
     , Text, text
     )
-  import Graphics.UI.Color (Color(..))
+  import Graphics.UI.Color (name2RGB)
+  import Graphics.UI.Color.RGB (RGB(..))
 
   -- | We make an AST of `HTML`.
   -- | Though it'd be nice if this existed somewhere else.
@@ -34,30 +35,19 @@ module Graphics.UI.Interpreter.HTML where
 
   newtype Style = Style {color :: Maybe RGB}
 
-  newtype RGB = RGB {red :: Number, green :: Number, blue :: Number}
-
-  color2RGB :: Color -> RGB
-  color2RGB Black  = RGB {red: 0,   green: 0,   blue: 0}
-  color2RGB White  = RGB {red: 255, green: 255, blue: 255}
-  color2RGB Red    = RGB {red: 255, green: 0,   blue: 0}
-  color2RGB Green  = RGB {red: 0,   green: 255, blue: 0}
-  color2RGB Yellow = RGB {red: 0,   green: 255, blue: 255}
-  color2RGB Blue   = RGB {red: 0,   green: 0,   blue: 255}
-  color2RGB Purple = RGB {red: 255, green: 0,   blue: 255}
-
-  instance colorSimpleBody :: ColorSimple Body where
+  instance colorNameBody :: ColorName Body where
     color c (Body (Style style) tags) =
-      Body (Style {color: Just $ color2RGB c}) tags
+      Body (Style {color: Just $ name2RGB c}) tags
 
-  instance colorSimpleBodyTag :: ColorSimple BodyTag where
-    color c (P  (Style style) str) = P  (Style {color: Just $ color2RGB c}) str
-    color c (Ul (Style style) lis) = Ul (Style {color: Just $ color2RGB c}) lis
+  instance colorNameBodyTag :: ColorName BodyTag where
+    color c (P  (Style style) str) = P  (Style {color: Just $ name2RGB c}) str
+    color c (Ul (Style style) lis) = Ul (Style {color: Just $ name2RGB c}) lis
 
-  instance colorSimpleHTML :: ColorSimple HTML where
+  instance colorNameHTML :: ColorName HTML where
     color c (HTML head body) = HTML head $ color c body
 
-  instance colorSimpleListItem :: ColorSimple ListItem where
-    color c (Li (Style style) tag) = Li (Style {color: Just $ color2RGB c}) tag
+  instance colorNameListItem :: ColorName ListItem where
+    color c (Li (Style style) tag) = Li (Style {color: Just $ name2RGB c}) tag
 
   instance listBodyTag :: List BodyTag where
     list = Ul noStyle <<< ((Li noStyle) <$>)

@@ -1,4 +1,4 @@
-{- | `Terminal` implements `Text` and `ColorSimple`.
+{- | `Terminal` implements `Text` and `ColorName`.
       This is an ANSI Terminal interpreter.
 -}
 module Graphics.UI.Interpreter.Terminal where
@@ -7,8 +7,8 @@ module Graphics.UI.Interpreter.Terminal where
 
   import Debug.Trace (Trace(), trace)
 
-  import Graphics.UI (Text, text, ColorSimple, color)
-  import Graphics.UI.Color (Color(..))
+  import Graphics.UI (Text, text, ColorName, color)
+  import Graphics.UI.Color.Name (Name(..))
 
   newtype Terminal = Terminal String
 
@@ -22,7 +22,7 @@ module Graphics.UI.Interpreter.Terminal where
     text = Terminal
 
   -- | We use ANSI color codes.
-  instance colorSimpleTerminal :: ColorSimple Terminal where
+  instance colorNameTerminal :: ColorName Terminal where
     color Black  (Terminal str) = Terminal $ "\x1b[30m" ++ str ++ "\x1b[39;49m"
     color White  (Terminal str) = Terminal $ "\x1b[37m" ++ str ++ "\x1b[39;49m"
     color Red    (Terminal str) = Terminal $ "\x1b[31m" ++ str ++ "\x1b[39;49m"

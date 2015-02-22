@@ -11,11 +11,11 @@ class Text lang where
 
 We can make some text.
 
-#### `ColorSimple`
+#### `ColorName`
 
 ``` purescript
-class ColorSimple lang where
-  color :: Color -> lang -> lang
+class ColorName lang where
+  color :: Name -> lang -> lang
 ```
 
 We can color the representation.
@@ -32,10 +32,20 @@ A simple list of things.
 
 ## Module Graphics.UI.Color
 
-#### `Color`
+#### `name2RGB`
 
 ``` purescript
-data Color
+name2RGB :: Name -> RGB
+```
+
+
+
+## Module Graphics.UI.Color.Name
+
+#### `Name`
+
+``` purescript
+data Name
   = Black 
   | White 
   | Red 
@@ -47,6 +57,17 @@ data Color
 
 The possible colors we can make.
 Based on the first six stages of color in language by Berlin and Kay.
+
+
+## Module Graphics.UI.Color.RGB
+
+#### `RGB`
+
+``` purescript
+newtype RGB
+  = RGB { blue :: Number, green :: Number, red :: Number }
+```
+
 
 
 ## Module Graphics.UI.Interpreter.HTML
@@ -110,46 +131,31 @@ newtype Style
 ```
 
 
-#### `RGB`
+#### `colorNameBody`
 
 ``` purescript
-newtype RGB
-  = RGB { blue :: Number, green :: Number, red :: Number }
+instance colorNameBody :: ColorName Body
 ```
 
 
-#### `color2RGB`
+#### `colorNameBodyTag`
 
 ``` purescript
-color2RGB :: Color -> RGB
+instance colorNameBodyTag :: ColorName BodyTag
 ```
 
 
-#### `colorSimpleBody`
+#### `colorNameHTML`
 
 ``` purescript
-instance colorSimpleBody :: ColorSimple Body
+instance colorNameHTML :: ColorName HTML
 ```
 
 
-#### `colorSimpleBodyTag`
+#### `colorNameListItem`
 
 ``` purescript
-instance colorSimpleBodyTag :: ColorSimple BodyTag
-```
-
-
-#### `colorSimpleHTML`
-
-``` purescript
-instance colorSimpleHTML :: ColorSimple HTML
-```
-
-
-#### `colorSimpleListItem`
-
-``` purescript
-instance colorSimpleListItem :: ColorSimple ListItem
+instance colorNameListItem :: ColorName ListItem
 ```
 
 
@@ -328,10 +334,10 @@ instance textTerminal :: Text Terminal
 ```
 
 
-#### `colorSimpleTerminal`
+#### `colorNameTerminal`
 
 ``` purescript
-instance colorSimpleTerminal :: ColorSimple Terminal
+instance colorNameTerminal :: ColorName Terminal
 ```
 
 We use ANSI color codes.

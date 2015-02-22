@@ -1,15 +1,15 @@
 {- | Here we specify the possible ways to build UI's. -}
 module Graphics.UI where
 
-  import Graphics.UI.Color (Color())
+  import Graphics.UI.Color.Name (Name())
 
   -- | We can make some text.
   class Text lang where
     text :: String -> lang
 
   -- | We can color the representation.
-  class ColorSimple lang where
-    color :: Color -> lang -> lang
+  class ColorName lang where
+    color :: Name -> lang -> lang
 
   -- | A simple list of things.
   class List lang where
