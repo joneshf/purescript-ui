@@ -1,5 +1,5 @@
 {- | `Terminal` implements `Text` and `ColorName`.
-      This is an ANSI Terminal interpreter.
+   |  This is an ANSI Terminal interpreter.
 -}
 module Graphics.UI.Interpreter.Terminal where
 

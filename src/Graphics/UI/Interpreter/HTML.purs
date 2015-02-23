@@ -10,13 +10,10 @@ module Graphics.UI.Interpreter.HTML where
 
   import Debug.Trace (Trace(), trace)
 
-  import Graphics.UI
-    ( ColorName, color
-    , List, list
-    , Text, text
-    )
   import Graphics.UI.Color (name2RGB)
   import Graphics.UI.Color.RGB (RGB(..))
+
+  import qualified Graphics.UI as UI
 
   -- | We make an AST of `HTML`.
   -- | Though it'd be nice if this existed somewhere else.
@@ -28,41 +25,102 @@ module Graphics.UI.Interpreter.HTML where
 
   data Body = Body Style [BodyTag]
 
-  data BodyTag = P  Style String
-               | Ul Style [ListItem]
+  -- This isn't valid html.
+  data BodyTag = Div  Style [BodyTag]
+               | P    Style String
+               | Span Style [BodyTag]
+               | Text String
+               | Ul   Style [ListItem]
 
   data ListItem = Li Style BodyTag
 
-  newtype Style = Style {color :: Maybe RGB}
+  newtype Style = Style StyleRec
+  type StyleRec =
+    { color :: Maybe RGB
+    , backgroundColor :: Maybe RGB
+    }
 
-  instance colorNameBody :: ColorName Body where
+  instance colorNameBody :: UI.ColorName Body where
     color c (Body (Style style) tags) =
-      Body (Style {color: Just $ name2RGB c}) tags
+      Body (Style style{color = Just $ name2RGB c}) tags
 
-  instance colorNameBodyTag :: ColorName BodyTag where
-    color c (P  (Style style) str) = P  (Style {color: Just $ name2RGB c}) str
-    color c (Ul (Style style) lis) = Ul (Style {color: Just $ name2RGB c}) lis
+  instance colorNameBodyTag :: UI.ColorName BodyTag where
+    color c (Div  (Style style) tags) =
+      Div  (Style style{color = Just $ name2RGB c}) tags
+    color c (P    (Style style) str)  =
+      P    (Style style{color = Just $ name2RGB c}) str
+    color c (Span (Style style) str)  =
+      Span (Style style{color = Just $ name2RGB c}) str
+    color c (Text str)                =
+      UI.color c $ Span noStyle [Text str]
+    color c (Ul   (Style style) lis)  =
+      Ul   (Style style{color = Just $ name2RGB c}) lis
 
-  instance colorNameHTML :: ColorName HTML where
-    color c (HTML head body) = HTML head $ color c body
+  instance colorNameHTML :: UI.ColorName HTML where
+    color c (HTML head body) = HTML head $ UI.color c body
 
-  instance colorNameListItem :: ColorName ListItem where
-    color c (Li (Style style) tag) = Li (Style {color: Just $ name2RGB c}) tag
+  instance colorNameListItem :: UI.ColorName ListItem where
+    color c (Li (Style style) tag) =
+      Li (Style style{color = Just $ name2RGB c}) tag
 
-  instance listBodyTag :: List BodyTag where
+  instance backgroundColorNameBody :: UI.BackgroundColorName Body where
+    backgroundColor c (Body (Style style) tags) =
+      Body (Style style{backgroundColor = Just $ name2RGB c}) tags
+
+  instance backgroundColorNameBodyTag :: UI.BackgroundColorName BodyTag where
+    backgroundColor c (Div  (Style style) tags) =
+      Div  (Style style{backgroundColor = Just $ name2RGB c}) tags
+    backgroundColor c (P    (Style style) str)  =
+      P    (Style style{backgroundColor = Just $ name2RGB c}) str
+    backgroundColor c (Span (Style style) str)  =
+      Span (Style style{backgroundColor = Just $ name2RGB c}) str
+    backgroundColor c (Text str)                =
+      UI.backgroundColor c $ Span noStyle [Text str]
+    backgroundColor c (Ul   (Style style) lis)  =
+      Ul   (Style style{backgroundColor = Just $ name2RGB c}) lis
+
+  instance backgroundColorNameHTML :: UI.BackgroundColorName HTML where
+    backgroundColor c (HTML head body) = HTML head $ UI.backgroundColor c body
+
+  instance backgroundColorNameListItem :: UI.BackgroundColorName ListItem where
+    backgroundColor c (Li (Style style) tag) =
+      Li (Style style{backgroundColor = Just $ name2RGB c}) tag
+
+  instance groupHorizontalBodyTag :: UI.GroupHorizontal BodyTag where
+    groupHorizontal tags = Div noStyle [Span noStyle tags]
+
+  instance groupVerticalBodyTag :: UI.GroupVertical BodyTag where
+    groupVertical tags = Div noStyle [Div noStyle tags]
+
+  instance listBodyTag :: UI.List BodyTag where
     list = Ul noStyle <<< ((Li noStyle) <$>)
 
-  instance textHTML :: Text HTML where
-    text str = HTML (Head $ Title "") (Body noStyle [text str])
+  instance textHTML :: UI.Text HTML where
+    text str = HTML (Head $ Title "") (Body noStyle [UI.text str])
 
-  instance textBodyTag :: Text BodyTag where
-    text = P noStyle
+  instance textBodyTag :: UI.Text BodyTag where
+    text = Text
+
+  instance titleHTML :: UI.Title HTML where
+    title t (HTML head body) = HTML (UI.title t head) body
+
+  instance titleHead :: UI.Title Head where
+    title t (Head t') = Head $ UI.title t t'
+
+  instance titleTitle :: UI.Title Title where
+    title t _ = Title t
+
+  body' :: [BodyTag] -> Body
+  body' = Body noStyle
+
+  html' :: Body -> HTML
+  html' = HTML $ Head $ Title ""
 
   noStyle :: Style
-  noStyle = Style {color: Nothing}
+  noStyle = Style {color: Nothing, backgroundColor: Nothing}
 
   printHTML :: forall eff. HTML -> Eff (trace :: Trace | eff) Unit
-  printHTML = render 0 >>> trace
+  printHTML = render' >>> trace
 
   -- | A little helper function to generate properly indented strings.
   -- | This should be done more efficiently though.
@@ -74,6 +132,9 @@ module Graphics.UI.Interpreter.HTML where
   -- | A type class for `Render`ing arbitrary `HTML` tags
   class Render tag where
     render :: Number -> tag -> String
+
+  render' :: forall tag. (Render tag) => tag -> String
+  render' = render 0
 
   instance renderHTML :: Render HTML where
     render n (HTML head body) = indent n "<html>"
@@ -99,26 +160,37 @@ module Graphics.UI.Interpreter.HTML where
                           ++ indent n "</title>"
 
   instance renderBody :: Render Body where
-    render n (Body style tags) = indent n "<body" ++ render 0 style ++ ">"
+    render n (Body style tags) = indent n "<body" ++ render' style ++ ">"
                               ++ "\n"
                               ++ render (n + 2) tags
                               ++ "\n"
                               ++ indent n "</body>"
 
   instance renderBodyTag :: Render BodyTag where
-    render n (P style str) = indent n "<p" ++ render 0 style ++ ">"
-                          ++ "\n"
-                          ++ render (n + 2) str
-                          ++ "\n"
-                          ++ indent n "</p>"
-    render n (Ul style items) = indent n "<ul" ++ render 0 style ++ ">"
-                             ++ "\n"
-                             ++ render (n + 2) items
-                             ++ "\n"
-                             ++ indent n "</ul>"
+    render n (Div  style tags)  = indent n "<div" ++ render' style ++ ">"
+                               ++ "\n"
+                               ++ render (n + 2) tags
+                               ++ "\n"
+                               ++ indent n "</div>"
+    render n (P    style str)   = indent n "<p" ++ render' style ++ ">"
+                               ++ "\n"
+                               ++ render (n + 2) str
+                               ++ "\n"
+                               ++ indent n "</p>"
+    render n (Span style tags)  = indent n "<span" ++ render' style ++ ">"
+                               ++ "\n"
+                               ++ render (n + 2) tags
+                               ++ "\n"
+                               ++ indent n "</span>"
+    render n (Text str)         = indent n str
+    render n (Ul   style items) = indent n "<ul" ++ render' style ++ ">"
+                               ++ "\n"
+                               ++ render (n + 2) items
+                               ++ "\n"
+                               ++ indent n "</ul>"
 
   instance renderListItem :: Render ListItem where
-    render n (Li style item) = indent n "<li" ++ render 0 style ++ ">"
+    render n (Li style item) = indent n "<li" ++ render' style ++ ">"
                             ++ "\n"
                             ++ render (n + 2) item
                             ++ "\n"
@@ -132,11 +204,13 @@ module Graphics.UI.Interpreter.HTML where
   instance renderArray :: (Render h) => Render [h] where
     render n hs = intercalate "\n" $ render n <$> hs
 
+  -- TODO: This is ugly as all get out. Clean this up.
   instance renderStyle :: Render Style where
-    render _ (Style style) = fromMaybe "" do
-      c <- render 0 <$> style.color
-      pure $ " style=\"" ++ c ++ "\""
+    render _ (Style style) = fromMaybe ""
+      $  (("color: " ++)            <<< render' <$> style.color)
+      ++ (("background-color: " ++) <<< render' <$> style.backgroundColor)
+      <#> \s -> " style=\"" ++ s ++ "\""
 
   instance renderRGB :: Render RGB where
     render _ (RGB {red = r, green = g, blue = b}) =
-      "color: rgb(" ++ show r ++ ", " ++ show g ++ ", " ++ show b ++ ");"
+      "rgb(" ++ show r ++ ", " ++ show g ++ ", " ++ show b ++ "); "

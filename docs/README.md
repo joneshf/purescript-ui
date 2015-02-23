@@ -2,14 +2,14 @@
 
 ## Module Graphics.UI
 
-#### `Text`
+#### `BackgroundColorName`
 
 ``` purescript
-class Text lang where
-  text :: String -> lang
+class BackgroundColorName lang where
+  backgroundColor :: Name -> lang -> lang
 ```
 
-We can make some text.
+We can color the representation.
 
 #### `ColorName`
 
@@ -20,6 +20,24 @@ class ColorName lang where
 
 We can color the representation.
 
+#### `GroupVertical`
+
+``` purescript
+class GroupVertical lang where
+  groupVertical :: [lang] -> lang
+```
+
+We can vertically align multiple UI's
+
+#### `GroupHorizontal`
+
+``` purescript
+class GroupHorizontal lang where
+  groupHorizontal :: [lang] -> lang
+```
+
+We can horizontally align multiple UI's
+
 #### `List`
 
 ``` purescript
@@ -28,6 +46,24 @@ class List lang where
 ```
 
 A simple list of things.
+
+#### `Text`
+
+``` purescript
+class Text lang where
+  text :: String -> lang
+```
+
+We can make some text.
+
+#### `Title`
+
+``` purescript
+class Title lang where
+  title :: String -> lang -> lang
+```
+
+We can set the title of a UI.
 
 
 ## Module Graphics.UI.Color
@@ -58,6 +94,62 @@ data Name
 The possible colors we can make.
 Based on the first six stages of color in language by Berlin and Kay.
 
+#### `PrismP`
+
+``` purescript
+type PrismP s a = forall f p. (Applicative f, Choice p) => p a (f a) -> p s (f s)
+```
+
+
+#### `_Black`
+
+``` purescript
+_Black :: PrismP Name Unit
+```
+
+
+#### `_White`
+
+``` purescript
+_White :: PrismP Name Unit
+```
+
+
+#### `_Red`
+
+``` purescript
+_Red :: PrismP Name Unit
+```
+
+
+#### `_Green`
+
+``` purescript
+_Green :: PrismP Name Unit
+```
+
+
+#### `_Yellow`
+
+``` purescript
+_Yellow :: PrismP Name Unit
+```
+
+
+#### `_Blue`
+
+``` purescript
+_Blue :: PrismP Name Unit
+```
+
+
+#### `_Purple`
+
+``` purescript
+_Purple :: PrismP Name Unit
+```
+
+
 
 ## Module Graphics.UI.Color.RGB
 
@@ -65,7 +157,49 @@ Based on the first six stages of color in language by Berlin and Kay.
 
 ``` purescript
 newtype RGB
-  = RGB { blue :: Number, green :: Number, red :: Number }
+  = RGB RGBRec
+```
+
+
+#### `RGBRec`
+
+``` purescript
+type RGBRec = { blue :: Number, green :: Number, red :: Number }
+```
+
+
+#### `LensP`
+
+``` purescript
+type LensP s a = forall f. (Functor f) => (a -> f a) -> s -> f s
+```
+
+
+#### `_RGB`
+
+``` purescript
+_RGB :: LensP RGB RGBRec
+```
+
+
+#### `red`
+
+``` purescript
+red :: LensP { red :: Number | _ } Number
+```
+
+
+#### `green`
+
+``` purescript
+green :: LensP { green :: Number | _ } Number
+```
+
+
+#### `blue`
+
+``` purescript
+blue :: LensP { blue :: Number | _ } Number
 ```
 
 
@@ -110,10 +244,12 @@ data Body
 
 ``` purescript
 data BodyTag
-  = P Style String
+  = Div Style [BodyTag]
+  | P Style String
+  | Span Style [BodyTag]
+  | Text String
   | Ul Style [ListItem]
 ```
-
 
 #### `ListItem`
 
@@ -127,56 +263,140 @@ data ListItem
 
 ``` purescript
 newtype Style
-  = Style { color :: Maybe RGB }
+  = Style StyleRec
+```
+
+
+#### `StyleRec`
+
+``` purescript
+type StyleRec = { backgroundColor :: Maybe RGB, color :: Maybe RGB }
 ```
 
 
 #### `colorNameBody`
 
 ``` purescript
-instance colorNameBody :: ColorName Body
+instance colorNameBody :: UI.ColorName Body
 ```
 
 
 #### `colorNameBodyTag`
 
 ``` purescript
-instance colorNameBodyTag :: ColorName BodyTag
+instance colorNameBodyTag :: UI.ColorName BodyTag
 ```
 
 
 #### `colorNameHTML`
 
 ``` purescript
-instance colorNameHTML :: ColorName HTML
+instance colorNameHTML :: UI.ColorName HTML
 ```
 
 
 #### `colorNameListItem`
 
 ``` purescript
-instance colorNameListItem :: ColorName ListItem
+instance colorNameListItem :: UI.ColorName ListItem
+```
+
+
+#### `backgroundColorNameBody`
+
+``` purescript
+instance backgroundColorNameBody :: UI.BackgroundColorName Body
+```
+
+
+#### `backgroundColorNameBodyTag`
+
+``` purescript
+instance backgroundColorNameBodyTag :: UI.BackgroundColorName BodyTag
+```
+
+
+#### `backgroundColorNameHTML`
+
+``` purescript
+instance backgroundColorNameHTML :: UI.BackgroundColorName HTML
+```
+
+
+#### `backgroundColorNameListItem`
+
+``` purescript
+instance backgroundColorNameListItem :: UI.BackgroundColorName ListItem
+```
+
+
+#### `groupHorizontalBodyTag`
+
+``` purescript
+instance groupHorizontalBodyTag :: UI.GroupHorizontal BodyTag
+```
+
+
+#### `groupVerticalBodyTag`
+
+``` purescript
+instance groupVerticalBodyTag :: UI.GroupVertical BodyTag
 ```
 
 
 #### `listBodyTag`
 
 ``` purescript
-instance listBodyTag :: List BodyTag
+instance listBodyTag :: UI.List BodyTag
 ```
 
 
 #### `textHTML`
 
 ``` purescript
-instance textHTML :: Text HTML
+instance textHTML :: UI.Text HTML
 ```
 
 
 #### `textBodyTag`
 
 ``` purescript
-instance textBodyTag :: Text BodyTag
+instance textBodyTag :: UI.Text BodyTag
+```
+
+
+#### `titleHTML`
+
+``` purescript
+instance titleHTML :: UI.Title HTML
+```
+
+
+#### `titleHead`
+
+``` purescript
+instance titleHead :: UI.Title Head
+```
+
+
+#### `titleTitle`
+
+``` purescript
+instance titleTitle :: UI.Title Title
+```
+
+
+#### `body'`
+
+``` purescript
+body' :: [BodyTag] -> Body
+```
+
+
+#### `html'`
+
+``` purescript
+html' :: Body -> HTML
 ```
 
 
@@ -211,6 +431,13 @@ class Render tag where
 ```
 
 A type class for `Render`ing arbitrary `HTML` tags
+
+#### `render'`
+
+``` purescript
+render' :: forall tag. (Render tag) => tag -> String
+```
+
 
 #### `renderHTML`
 
@@ -275,7 +502,6 @@ We can render an array of things by `intercalate`ing a newline.
 ``` purescript
 instance renderStyle :: Render Style
 ```
-
 
 #### `renderRGB`
 

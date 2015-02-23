@@ -24,6 +24,11 @@ var paths = {
                       , 'examples/Examples/Graphics/UI/Colorful.purs'
                       ]
         },
+        grouped: {
+            html: [ 'examples/Examples/Graphics/UI/Grouped/HTML.purs'
+                  , 'examples/Examples/Graphics/UI/Grouped.purs'
+                  ]
+        },
         hello: {
             bodyTag: [ 'examples/Examples/Graphics/UI/Hello/BodyTag.purs'
                      , 'examples/Examples/Graphics/UI/Hello.purs'
@@ -51,6 +56,9 @@ var options = {
         colorful: {
             html: {main: 'Examples.Graphics.UI.Colorful.HTML'},
             terminal: {main: 'Examples.Graphics.UI.Colorful.Terminal'}
+        },
+        grouped: {
+            html: {main: 'Examples.Graphics.UI.Grouped.HTML'}
         },
         hello: {
             bodyTag: {
@@ -142,6 +150,11 @@ gulp.task('examples-Colorful-Terminal', function() {
         .pipe(run('node'));
 });
 
+gulp.task('examples-Grouped-HTML', function() {
+    return compile(purescript.psc, paths.examples.grouped.html, options.examples.grouped.html)
+        .pipe(run('node | cat > examples/Examples/Graphics/UI/Grouped/HTML/index.html'));
+});
+
 gulp.task('examples-Hello-BodyTag', function() {
     return compile(purescript.psc, paths.examples.hello.bodyTag, options.examples.hello.bodyTag);
 });
@@ -162,6 +175,7 @@ gulp.task('examples-Hello-Thermite', function() {
 
 gulp.task('examples', [ 'examples-Colorful-HTML'
                       , 'examples-Colorful-Terminal'
+                      , 'examples-Grouped-HTML'
                       , 'examples-Hello-BodyTag'
                       , 'examples-Hello-HTML'
                       , 'examples-Hello-Terminal'
