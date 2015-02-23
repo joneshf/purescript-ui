@@ -8,6 +8,6 @@ module Graphics.UI.Color where
   name2RGB White  = RGB {red: 255, green: 255, blue: 255}
   name2RGB Red    = RGB {red: 255, green: 0,   blue: 0}
   name2RGB Green  = RGB {red: 0,   green: 255, blue: 0}
-  name2RGB Yellow = RGB {red: 0,   green: 255, blue: 255}
+  name2RGB Yellow = RGB {red: 255, green: 255, blue: 0}
   name2RGB Blue   = RGB {red: 0,   green: 0,   blue: 255}
   name2RGB Purple = RGB {red: 255, green: 0,   blue: 255}
