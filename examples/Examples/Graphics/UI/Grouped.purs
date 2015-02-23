@@ -12,9 +12,9 @@ module Examples.Graphics.UI.Grouped where
           => g
   grouped = groupVertical [ groupHorizontal [ text "This is one row of stuff"
                                             , text "Here's another thing!"
-                                            , text "It's all green!"
+                                            , text "It's all blue!"
                                             ]
-                            # color Green
+                            # color Blue
                           , groupHorizontal [ text "We started a new row"
                                             , text "Here's some blue text"
                                               # color Blue

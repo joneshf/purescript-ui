@@ -20,6 +20,24 @@ class ColorName lang where
 
 We can color the representation.
 
+#### `BackgroundColorRGB`
+
+``` purescript
+class BackgroundColorRGB lang where
+  backgroundRGB :: RGB -> lang -> lang
+```
+
+We can color the representation.
+
+#### `ColorRGB`
+
+``` purescript
+class ColorRGB lang where
+  rgb :: RGB -> lang -> lang
+```
+
+We can color the representation.
+
 #### `GroupVertical`
 
 ``` purescript
@@ -274,6 +292,34 @@ type StyleRec = { backgroundColor :: Maybe RGB, color :: Maybe RGB }
 ```
 
 
+#### `backgroundColorNameBody`
+
+``` purescript
+instance backgroundColorNameBody :: UI.BackgroundColorName Body
+```
+
+
+#### `backgroundColorNameBodyTag`
+
+``` purescript
+instance backgroundColorNameBodyTag :: UI.BackgroundColorName BodyTag
+```
+
+
+#### `backgroundColorNameHTML`
+
+``` purescript
+instance backgroundColorNameHTML :: UI.BackgroundColorName HTML
+```
+
+
+#### `backgroundColorNameListItem`
+
+``` purescript
+instance backgroundColorNameListItem :: UI.BackgroundColorName ListItem
+```
+
+
 #### `colorNameBody`
 
 ``` purescript
@@ -302,31 +348,59 @@ instance colorNameListItem :: UI.ColorName ListItem
 ```
 
 
-#### `backgroundColorNameBody`
+#### `backgroundColorRGBBody`
 
 ``` purescript
-instance backgroundColorNameBody :: UI.BackgroundColorName Body
+instance backgroundColorRGBBody :: UI.BackgroundColorRGB Body
 ```
 
 
-#### `backgroundColorNameBodyTag`
+#### `backgroundColorRGBBodyTag`
 
 ``` purescript
-instance backgroundColorNameBodyTag :: UI.BackgroundColorName BodyTag
+instance backgroundColorRGBBodyTag :: UI.BackgroundColorRGB BodyTag
 ```
 
 
-#### `backgroundColorNameHTML`
+#### `backgroundColorRGBHTML`
 
 ``` purescript
-instance backgroundColorNameHTML :: UI.BackgroundColorName HTML
+instance backgroundColorRGBHTML :: UI.BackgroundColorRGB HTML
 ```
 
 
-#### `backgroundColorNameListItem`
+#### `backgroundColorRGBListItem`
 
 ``` purescript
-instance backgroundColorNameListItem :: UI.BackgroundColorName ListItem
+instance backgroundColorRGBListItem :: UI.BackgroundColorRGB ListItem
+```
+
+
+#### `colorRGBBody`
+
+``` purescript
+instance colorRGBBody :: UI.ColorRGB Body
+```
+
+
+#### `colorRGBBodyTag`
+
+``` purescript
+instance colorRGBBodyTag :: UI.ColorRGB BodyTag
+```
+
+
+#### `colorRGBHTML`
+
+``` purescript
+instance colorRGBHTML :: UI.ColorRGB HTML
+```
+
+
+#### `colorRGBListItem`
+
+``` purescript
+instance colorRGBListItem :: UI.ColorRGB ListItem
 ```
 
 

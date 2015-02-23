@@ -40,6 +40,29 @@ module Graphics.UI.Interpreter.HTML where
     , backgroundColor :: Maybe RGB
     }
 
+  instance backgroundColorNameBody :: UI.BackgroundColorName Body where
+    backgroundColor c (Body (Style style) tags) =
+      Body (Style style{backgroundColor = Just $ name2RGB c}) tags
+
+  instance backgroundColorNameBodyTag :: UI.BackgroundColorName BodyTag where
+    backgroundColor c (Div  (Style style) tags) =
+      Div  (Style style{backgroundColor = Just $ name2RGB c}) tags
+    backgroundColor c (P    (Style style) str)  =
+      P    (Style style{backgroundColor = Just $ name2RGB c}) str
+    backgroundColor c (Span (Style style) str)  =
+      Span (Style style{backgroundColor = Just $ name2RGB c}) str
+    backgroundColor c (Text str)                =
+      UI.backgroundColor c $ Span noStyle [Text str]
+    backgroundColor c (Ul   (Style style) lis)  =
+      Ul   (Style style{backgroundColor = Just $ name2RGB c}) lis
+
+  instance backgroundColorNameHTML :: UI.BackgroundColorName HTML where
+    backgroundColor c (HTML head body) = HTML head $ UI.backgroundColor c body
+
+  instance backgroundColorNameListItem :: UI.BackgroundColorName ListItem where
+    backgroundColor c (Li (Style style) tag) =
+      Li (Style style{backgroundColor = Just $ name2RGB c}) tag
+
   instance colorNameBody :: UI.ColorName Body where
     color c (Body (Style style) tags) =
       Body (Style style{color = Just $ name2RGB c}) tags
@@ -63,28 +86,51 @@ module Graphics.UI.Interpreter.HTML where
     color c (Li (Style style) tag) =
       Li (Style style{color = Just $ name2RGB c}) tag
 
-  instance backgroundColorNameBody :: UI.BackgroundColorName Body where
-    backgroundColor c (Body (Style style) tags) =
-      Body (Style style{backgroundColor = Just $ name2RGB c}) tags
+  instance backgroundColorRGBBody :: UI.BackgroundColorRGB Body where
+    backgroundRGB c (Body (Style style) tags) =
+      Body (Style style{backgroundColor = Just c}) tags
 
-  instance backgroundColorNameBodyTag :: UI.BackgroundColorName BodyTag where
-    backgroundColor c (Div  (Style style) tags) =
-      Div  (Style style{backgroundColor = Just $ name2RGB c}) tags
-    backgroundColor c (P    (Style style) str)  =
-      P    (Style style{backgroundColor = Just $ name2RGB c}) str
-    backgroundColor c (Span (Style style) str)  =
-      Span (Style style{backgroundColor = Just $ name2RGB c}) str
-    backgroundColor c (Text str)                =
-      UI.backgroundColor c $ Span noStyle [Text str]
-    backgroundColor c (Ul   (Style style) lis)  =
-      Ul   (Style style{backgroundColor = Just $ name2RGB c}) lis
+  instance backgroundColorRGBBodyTag :: UI.BackgroundColorRGB BodyTag where
+    backgroundRGB c (Div  (Style style) tags) =
+      Div  (Style style{backgroundColor = Just c}) tags
+    backgroundRGB c (P    (Style style) str)  =
+      P    (Style style{backgroundColor = Just c}) str
+    backgroundRGB c (Span (Style style) str)  =
+      Span (Style style{backgroundColor = Just c}) str
+    backgroundRGB c (Text str)                =
+      UI.backgroundRGB c $ Span noStyle [Text str]
+    backgroundRGB c (Ul   (Style style) lis)  =
+      Ul   (Style style{backgroundColor = Just c}) lis
 
-  instance backgroundColorNameHTML :: UI.BackgroundColorName HTML where
-    backgroundColor c (HTML head body) = HTML head $ UI.backgroundColor c body
+  instance backgroundColorRGBHTML :: UI.BackgroundColorRGB HTML where
+    backgroundRGB c (HTML head body) = HTML head $ UI.backgroundRGB c body
 
-  instance backgroundColorNameListItem :: UI.BackgroundColorName ListItem where
-    backgroundColor c (Li (Style style) tag) =
-      Li (Style style{backgroundColor = Just $ name2RGB c}) tag
+  instance backgroundColorRGBListItem :: UI.BackgroundColorRGB ListItem where
+    backgroundRGB c (Li (Style style) tag) =
+      Li (Style style{backgroundColor = Just c}) tag
+
+  instance colorRGBBody :: UI.ColorRGB Body where
+    rgb c (Body (Style style) tags) =
+      Body (Style style{color = Just c}) tags
+
+  instance colorRGBBodyTag :: UI.ColorRGB BodyTag where
+    rgb c (Div  (Style style) tags) =
+      Div  (Style style{color = Just c}) tags
+    rgb c (P    (Style style) str)  =
+      P    (Style style{color = Just c}) str
+    rgb c (Span (Style style) str)  =
+      Span (Style style{color = Just c}) str
+    rgb c (Text str)                =
+      UI.rgb c $ Span noStyle [Text str]
+    rgb c (Ul   (Style style) lis)  =
+      Ul   (Style style{color = Just c}) lis
+
+  instance colorRGBHTML :: UI.ColorRGB HTML where
+    rgb c (HTML head body) = HTML head $ UI.rgb c body
+
+  instance colorRGBListItem :: UI.ColorRGB ListItem where
+    rgb c (Li (Style style) tag) =
+      Li (Style style{color = Just c}) tag
 
   instance groupHorizontalBodyTag :: UI.GroupHorizontal BodyTag where
     groupHorizontal tags = Div noStyle [Span noStyle tags]

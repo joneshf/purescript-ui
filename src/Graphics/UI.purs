@@ -2,6 +2,7 @@
 module Graphics.UI where
 
   import Graphics.UI.Color.Name (Name())
+  import Graphics.UI.Color.RGB (RGB())
 
   -- | We can color the representation.
   class BackgroundColorName lang where
@@ -10,6 +11,14 @@ module Graphics.UI where
   -- | We can color the representation.
   class ColorName lang where
     color :: Name -> lang -> lang
+
+  -- | We can color the representation.
+  class BackgroundColorRGB lang where
+    backgroundRGB :: RGB -> lang -> lang
+
+  -- | We can color the representation.
+  class ColorRGB lang where
+    rgb :: RGB -> lang -> lang
 
   -- | We can vertically align multiple UI's
   class GroupVertical lang where
