@@ -28,7 +28,7 @@ module Graphics.UI.Interpreter.Thermite where
       where
         button' ctx = T.button [T.onClick ctx \_ -> runPure (unsafeInterleaveEff ev)] [T.text label]
 
-  instance groupHorizontalHtml :: GroupHorizontal (T.Html action) where
+  instance groupHorizontalThermiteHtml :: GroupHorizontal (T.Html action) where
     groupHorizontal = T.span'
 
   -- Not yet...

@@ -17,9 +17,9 @@ var paths = {
     docsDest: 'docs/README.md',
     examples: {
         button: {
-            thermite: [ 'examples/Examples/Graphics/UI/Button/Thermite.purs'
-                      , 'examples/Examples/Graphics/UI/Button.purs'
-                      ]
+            reactSimple: [ 'examples/Examples/Graphics/UI/Button/ReactSimple.purs'
+                         , 'examples/Examples/Graphics/UI/Button.purs'
+                         ]
         },
         colorful: {
             html: [ 'examples/Examples/Graphics/UI/Colorful/HTML.purs'
@@ -59,10 +59,10 @@ var options = {
     compiler: {},
     examples: {
         button: {
-            thermite: {
-                modules: 'Examples.Graphics.UI.Button.Thermite',
-                main: 'Examples.Graphics.UI.Button.Thermite',
-                output: 'examples/Examples/Graphics/UI/Button/Thermite/button.js'
+            reactSimple: {
+                modules: 'Examples.Graphics.UI.Button.ReactSimple',
+                main: 'Examples.Graphics.UI.Button.ReactSimple',
+                output: 'examples/Examples/Graphics/UI/Button/ReactSimple/button.js'
             }
         },
         colorful: {
@@ -167,8 +167,8 @@ gulp.task('docs', function() {
       .pipe(gulp.dest(paths.docsDest));
 });
 
-gulp.task('examples-Button-Thermite', function() {
-    return compile(purescript.psc, paths.examples.button.thermite, options.examples.button.thermite);
+gulp.task('examples-Button-ReactSimple', function() {
+    return compile(purescript.psc, paths.examples.button.reactSimple, options.examples.button.reactSimple);
 });
 
 gulp.task('examples-Colorful-HTML', function() {
@@ -204,7 +204,7 @@ gulp.task('examples-Hello-Thermite', function() {
     return compile(purescript.psc, paths.examples.hello.thermite, options.examples.hello.thermite);
 });
 
-gulp.task('examples', [ 'examples-Button-Thermite'
+gulp.task('examples', [ 'examples-Button-ReactSimple'
                       , 'examples-Colorful-HTML'
                       , 'examples-Colorful-Terminal'
                       , 'examples-Grouped-HTML'

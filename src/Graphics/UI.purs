@@ -42,3 +42,12 @@ module Graphics.UI where
   -- | We can set the title of a UI.
   class Title lang where
     title :: String -> lang -> lang
+
+  button' :: forall a e lang. (Show a, Button lang e) => a -> e -> lang
+  button' = show >>> button
+
+  text' :: forall a lang. (Show a, Text lang) => a -> lang
+  text' = show >>> text
+
+  title' :: forall a lang. (Show a, Title lang) => a -> lang -> lang
+  title' = show >>> title

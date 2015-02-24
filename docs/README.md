@@ -91,6 +91,27 @@ class Title lang where
 
 We can set the title of a UI.
 
+#### `button'`
+
+``` purescript
+button' :: forall a e lang. (Show a, Button lang e) => a -> e -> lang
+```
+
+
+#### `text'`
+
+``` purescript
+text' :: forall a lang. (Show a, Text lang) => a -> lang
+```
+
+
+#### `title'`
+
+``` purescript
+title' :: forall a lang. (Show a, Title lang) => a -> lang -> lang
+```
+
+
 
 ## Module Graphics.UI.Color
 
@@ -593,6 +614,37 @@ instance renderRGB :: Render RGB
 
 
 
+## Module Graphics.UI.Interpreter.ReactSimple
+
+#### `buttonComponent`
+
+``` purescript
+instance buttonComponent :: Button R.Component (Eff eff Unit)
+```
+
+
+#### `groupHorizontalComponent`
+
+``` purescript
+instance groupHorizontalComponent :: GroupHorizontal R.Component
+```
+
+
+#### `groupVerticalComponent`
+
+``` purescript
+instance groupVerticalComponent :: GroupVertical R.Component
+```
+
+
+#### `textComponent`
+
+``` purescript
+instance textComponent :: Text R.Component
+```
+
+
+
 ## Module Graphics.UI.Interpreter.String
 
 #### `textString`
@@ -667,10 +719,10 @@ instance buttonThermiteComponentClassEff :: Button (T.ComponentClass props eff) 
 ```
 
 
-#### `groupHorizontalHtml`
+#### `groupHorizontalThermiteHtml`
 
 ``` purescript
-instance groupHorizontalHtml :: GroupHorizontal (T.Html action)
+instance groupHorizontalThermiteHtml :: GroupHorizontal (T.Html action)
 ```
 
 
