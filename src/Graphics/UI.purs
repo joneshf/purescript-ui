@@ -9,12 +9,15 @@ module Graphics.UI where
     backgroundColor :: Name -> lang -> lang
 
   -- | We can color the representation.
-  class ColorName lang where
-    color :: Name -> lang -> lang
-
-  -- | We can color the representation.
   class BackgroundColorRGB lang where
     backgroundRGB :: RGB -> lang -> lang
+
+  class Button lang event where
+    button :: String -> event -> lang
+
+  -- | We can color the representation.
+  class ColorName lang where
+    color :: Name -> lang -> lang
 
   -- | We can color the representation.
   class ColorRGB lang where

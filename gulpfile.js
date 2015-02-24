@@ -16,6 +16,11 @@ var paths = {
     dest: '',
     docsDest: 'docs/README.md',
     examples: {
+        button: {
+            thermite: [ 'examples/Examples/Graphics/UI/Button/Thermite.purs'
+                      , 'examples/Examples/Graphics/UI/Button.purs'
+                      ]
+        },
         colorful: {
             html: [ 'examples/Examples/Graphics/UI/Colorful/HTML.purs'
                   , 'examples/Examples/Graphics/UI/Colorful.purs'
@@ -53,25 +58,47 @@ var paths = {
 var options = {
     compiler: {},
     examples: {
+        button: {
+            thermite: {
+                modules: 'Examples.Graphics.UI.Button.Thermite',
+                main: 'Examples.Graphics.UI.Button.Thermite',
+                output: 'examples/Examples/Graphics/UI/Button/Thermite/button.js'
+            }
+        },
         colorful: {
-            html: {main: 'Examples.Graphics.UI.Colorful.HTML'},
-            terminal: {main: 'Examples.Graphics.UI.Colorful.Terminal'}
+            html: {
+                main: 'Examples.Graphics.UI.Colorful.HTML',
+                modules: 'Examples.Graphics.UI.Colorful.HTML'
+            },
+            terminal: {
+                main: 'Examples.Graphics.UI.Colorful.Terminal',
+                modules: 'Examples.Graphics.UI.Colorful.Terminal'
+            }
         },
         grouped: {
-            html: {main: 'Examples.Graphics.UI.Grouped.HTML'}
+            html: {
+                main: 'Examples.Graphics.UI.Grouped.HTML',
+                modules: 'Examples.Graphics.UI.Grouped.HTML'
+            }
         },
         hello: {
             bodyTag: {
                 modules: 'Examples.Graphics.UI.Hello.BodyTag',
                 output: 'examples/Examples/Graphics/UI/Hello/BodyTag/hello.js'
             },
-            html: {main: 'Examples.Graphics.UI.Hello.HTML'},
+            html: {
+                main: 'Examples.Graphics.UI.Hello.HTML',
+                modules: 'Examples.Graphics.UI.Hello.HTML'
+            },
             thermite: {
                 modules: 'Examples.Graphics.UI.Hello.Thermite',
                 main: 'Examples.Graphics.UI.Hello.Thermite',
                 output: 'examples/Examples/Graphics/UI/Hello/Thermite/hello.js'
             },
-            terminal: {main: 'Examples.Graphics.UI.Hello.Terminal'}
+            terminal: {
+                main: 'Examples.Graphics.UI.Hello.Terminal',
+                modules: 'Examples.Graphics.UI.Hello.Terminal'
+            }
         }
     },
     pscDocs: {}
@@ -140,6 +167,10 @@ gulp.task('docs', function() {
       .pipe(gulp.dest(paths.docsDest));
 });
 
+gulp.task('examples-Button-Thermite', function() {
+    return compile(purescript.psc, paths.examples.button.thermite, options.examples.button.thermite);
+});
+
 gulp.task('examples-Colorful-HTML', function() {
     return compile(purescript.psc, paths.examples.colorful.html, options.examples.colorful.html)
         .pipe(run('node | cat > examples/Examples/Graphics/UI/Colorful/HTML/index.html'));
@@ -173,7 +204,8 @@ gulp.task('examples-Hello-Thermite', function() {
     return compile(purescript.psc, paths.examples.hello.thermite, options.examples.hello.thermite);
 });
 
-gulp.task('examples', [ 'examples-Colorful-HTML'
+gulp.task('examples', [ 'examples-Button-Thermite'
+                      , 'examples-Colorful-HTML'
                       , 'examples-Colorful-Terminal'
                       , 'examples-Grouped-HTML'
                       , 'examples-Hello-BodyTag'

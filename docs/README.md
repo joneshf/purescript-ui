@@ -11,20 +11,28 @@ class BackgroundColorName lang where
 
 We can color the representation.
 
-#### `ColorName`
-
-``` purescript
-class ColorName lang where
-  color :: Name -> lang -> lang
-```
-
-We can color the representation.
-
 #### `BackgroundColorRGB`
 
 ``` purescript
 class BackgroundColorRGB lang where
   backgroundRGB :: RGB -> lang -> lang
+```
+
+We can color the representation.
+
+#### `Button`
+
+``` purescript
+class Button lang event where
+  button :: String -> event -> lang
+```
+
+
+#### `ColorName`
+
+``` purescript
+class ColorName lang where
+  color :: Name -> lang -> lang
 ```
 
 We can color the representation.
@@ -645,12 +653,32 @@ We use ANSI color codes.
 
 ## Module Graphics.UI.Interpreter.Thermite
 
+#### `buttonThermiteComponentClass`
+
+``` purescript
+instance buttonThermiteComponentClass :: Button (T.ComponentClass props eff) (T.MouseEvent -> action)
+```
+
+
+#### `buttonThermiteComponentClassEff`
+
+``` purescript
+instance buttonThermiteComponentClassEff :: Button (T.ComponentClass props eff) (Eff eff a)
+```
+
+
+#### `groupHorizontalHtml`
+
+``` purescript
+instance groupHorizontalHtml :: GroupHorizontal (T.Html action)
+```
+
+
 #### `textThermiteHtml`
 
 ``` purescript
 instance textThermiteHtml :: Text (T.Html action)
 ```
-
 
 #### `textThermiteComponentClass`
 
