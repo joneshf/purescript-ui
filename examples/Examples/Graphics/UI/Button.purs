@@ -2,7 +2,7 @@
     | However, we're using `purescript-signal` for our logic,
     | and letting any interpreter create the display.
 -}
-module Examples.Graphics.UI.Button (display) where
+module Examples.Graphics.UI.Button (Display, display) where
 
   import Control.Monad.Eff (Eff())
 
@@ -18,57 +18,45 @@ module Examples.Graphics.UI.Button (display) where
   import Signal (Signal(), foldp, runSignal)
   import Signal.Channel (Chan(), Channel(), channel, send, subscribe)
 
-  {-  | A few things to note here.
+  {-  | Something to note here.
       |
-      | * It'd be nice to have a synonym for the constraint.
-      |   This will probably get unwieldy for larger programs.
       | * We're using the `Monad` instance for functions
       |   so we don't have to pass around the argument.
       |   We could have used `Reader` here, but no point in another dependency.
   -}
+
+  {-  | We create a "constraint synonym",
+      | so that we don't have to pass around this laundry list of constraints.
+  -}
+  class ( Button g (Eff (chan :: Chan) Unit), GroupHorizontal g, GroupVertical g
+        , Text g) <= Display g
 
   -- | Create a channel for the numbers.
   nums :: Eff (chan :: Chan | _) (Channel Number)
   nums = channel 0
 
   -- Helper for buttons.
-  augment :: forall g
-          .  (Button g (Eff (chan :: Chan | _) Unit))
-          => String
-          -> Number
-          -> Channel Number
-          -> g
+  augment :: forall g. (Display g) => String -> Number -> Channel Number -> g
   augment label n = do
     message <- flip send n
     pure $ button label message
 
   -- | The increment button.
-  increment :: forall g
-            .  (Button g (Eff (chan :: Chan | _) Unit))
-            => Channel Number
-            -> g
+  increment :: forall g. (Display g) => Channel Number -> g
   increment = augment "Increment" 1
 
   -- | The decrement button.
-  decrement :: forall g
-            .  (Button g (Eff (chan :: Chan | _) Unit))
-            => Channel Number
-            -> g
+  decrement :: forall g. (Display g) => Channel Number -> g
   decrement = augment "Decrement" (- 1)
 
   -- | Display the value in the channel.
-  value :: forall g. (Text g) => Channel Number -> Signal g
+  value :: forall g. (Display g) => Channel Number -> Signal g
   value = do
     sig <- foldp (+) 0 <<< subscribe
     pure $ sig <#> \n -> text $ "Value: " ++ show n
 
   -- | Create our actual ui.
-  ui :: forall g
-     .  ( Button g (Eff (chan :: Chan | _) Unit), GroupHorizontal g
-        , GroupVertical g, Text g
-        )
-     => Channel Number
-     -> Signal g
+  ui :: forall g. (Display g) => Channel Number -> Signal g
   ui = do
     valueSig <- value
     decrementUI <- decrement
@@ -79,11 +67,7 @@ module Examples.Graphics.UI.Button (display) where
                     ]
 
   -- | Wire together the ui, channel, and renderer.
-  display :: forall g
-          .  ( Button g (Eff (chan :: Chan | _) Unit), GroupHorizontal g
-             , GroupVertical g, Text g
-             )
-          => (g -> Eff _ Unit) -> Eff _ Unit
+  display :: forall g. (Display g) => (g -> Eff _ Unit) -> Eff _ Unit
   display renderer = do
     numsChan <- nums
     runSignal $ renderer <$> ui numsChan
