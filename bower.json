@@ -8,5 +8,10 @@
     "purescript-thermite": "~0.5.2",
     "purescript-profunctor": "~0.1.0",
     "purescript-react-simple": "~0.1.1"
+  },
+  "devDependencies": {
+    "purescript-signal": "~2.2.0",
+    "purescript-kefir": "~0.6.9",
+    "kefir": "~1.1.0"
   }
 }

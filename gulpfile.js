@@ -47,6 +47,11 @@ var paths = {
             terminal: [ 'examples/Examples/Graphics/UI/Hello/Terminal.purs'
                       , 'examples/Examples/Graphics/UI/Hello.purs'
                       ]
+        },
+        logo: {
+            reactSimple: [ 'examples/Examples/Graphics/UI/Logo/ReactSimple.purs'
+                         , 'examples/Examples/Graphics/UI/Logo.purs'
+                         ]
         }
     },
     manifests: [
@@ -98,6 +103,13 @@ var options = {
             terminal: {
                 main: 'Examples.Graphics.UI.Hello.Terminal',
                 modules: 'Examples.Graphics.UI.Hello.Terminal'
+            }
+        },
+        logo: {
+            reactSimple: {
+                modules: 'Examples.Graphics.UI.Logo.ReactSimple',
+                main: 'Examples.Graphics.UI.Logo.ReactSimple',
+                output: 'examples/Examples/Graphics/UI/Logo/ReactSimple/logo.js'
             }
         }
     },
@@ -204,6 +216,10 @@ gulp.task('examples-Hello-Thermite', function() {
     return compile(purescript.psc, paths.examples.hello.thermite, options.examples.hello.thermite);
 });
 
+gulp.task('examples-Logo-ReactSimple', function() {
+    return compile(purescript.psc, paths.examples.logo.reactSimple, options.examples.logo.reactSimple);
+});
+
 gulp.task('examples', [ 'examples-Button-ReactSimple'
                       , 'examples-Colorful-HTML'
                       , 'examples-Colorful-Terminal'
@@ -212,6 +228,7 @@ gulp.task('examples', [ 'examples-Button-ReactSimple'
                       , 'examples-Hello-HTML'
                       , 'examples-Hello-Terminal'
                       , 'examples-Hello-Thermite'
+                      , 'examples-Logo-ReactSimple'
                       ]);
 
 gulp.task('watch-browser', function() {

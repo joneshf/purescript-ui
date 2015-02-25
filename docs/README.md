@@ -2,24 +2,6 @@
 
 ## Module Graphics.UI
 
-#### `BackgroundColorName`
-
-``` purescript
-class BackgroundColorName lang where
-  backgroundColor :: Name -> lang -> lang
-```
-
-We can color the representation.
-
-#### `BackgroundColorRGB`
-
-``` purescript
-class BackgroundColorRGB lang where
-  backgroundRGB :: RGB -> lang -> lang
-```
-
-We can color the representation.
-
 #### `Button`
 
 ``` purescript
@@ -27,24 +9,26 @@ class Button lang event where
   button :: String -> event -> lang
 ```
 
+## Creation
+We can interact with a UI through an event.
 
-#### `ColorName`
-
-``` purescript
-class ColorName lang where
-  color :: Name -> lang -> lang
-```
-
-We can color the representation.
-
-#### `ColorRGB`
+#### `Image`
 
 ``` purescript
-class ColorRGB lang where
-  rgb :: RGB -> lang -> lang
+class Image lang where
+  image :: String -> lang
 ```
 
-We can color the representation.
+We can make an image UI.
+
+#### `Text`
+
+``` purescript
+class Text lang where
+  text :: String -> lang
+```
+
+We can make a text UI.
 
 #### `GroupVertical`
 
@@ -53,6 +37,7 @@ class GroupVertical lang where
   groupVertical :: [lang] -> lang
 ```
 
+## Layout
 We can vertically align multiple UI's
 
 #### `GroupHorizontal`
@@ -71,16 +56,100 @@ class List lang where
   list :: [lang] -> lang
 ```
 
-A simple list of things.
+A simple list of UI's.
 
-#### `Text`
+#### `Position`
 
 ``` purescript
-class Text lang where
-  text :: String -> lang
+class Position lang where
+  position :: Number -> Number -> lang -> lang
 ```
 
-We can make some text.
+We can explicitly position a UI.
+
+#### `BackgroundColorName`
+
+``` purescript
+class BackgroundColorName lang where
+  backgroundColor :: Name -> lang -> lang
+```
+
+## Styling
+#### Color
+We can color background of the UI.
+
+#### `BackgroundColorRGB`
+
+``` purescript
+class BackgroundColorRGB lang where
+  backgroundRGB :: RGB -> lang -> lang
+```
+
+We can color background of the UI.
+
+#### `ColorName`
+
+``` purescript
+class ColorName lang where
+  color :: Name -> lang -> lang
+```
+
+We can color the UI.
+
+#### `ColorRGB`
+
+``` purescript
+class ColorRGB lang where
+  rgb :: RGB -> lang -> lang
+```
+
+We can color the UI.
+
+#### `Height`
+
+``` purescript
+class Height lang where
+  height :: Number -> lang -> lang
+```
+
+#### Sizing
+We can set the height of a UI.
+
+#### `Padding`
+
+``` purescript
+class Padding lang where
+  padding :: Number -> lang -> lang
+```
+
+We can pad inside a UI.
+
+#### `Margin`
+
+``` purescript
+class Margin lang where
+  margin :: Number -> lang -> lang
+```
+
+We can create space outside a UI.
+
+#### `Size`
+
+``` purescript
+class Size lang where
+  size :: Number -> Number -> lang -> lang
+```
+
+We can set both the width and the height of a UI.
+
+#### `Width`
+
+``` purescript
+class Width lang where
+  width :: Number -> lang -> lang
+```
+
+We can set the width of a UI.
 
 #### `Title`
 
@@ -89,7 +158,16 @@ class Title lang where
   title :: String -> lang -> lang
 ```
 
+## Miscellaneous
 We can set the title of a UI.
+
+#### `sizeFromWHLang`
+
+``` purescript
+instance sizeFromWHLang :: (Width lang, Height lang) => Size lang
+```
+
+Derived instances
 
 #### `button'`
 
@@ -97,6 +175,7 @@ We can set the title of a UI.
 button' :: forall a e lang. (Show a, Button lang e) => a -> e -> lang
 ```
 
+Helpers
 
 #### `text'`
 
@@ -257,7 +336,7 @@ blue :: LensP { blue :: Number | _ } Number
 
 ``` purescript
 data HTML
-  = HTML Head Body
+  = HTML Style Head Body
 ```
 
 We make an AST of `HTML`.
@@ -306,6 +385,14 @@ data ListItem
 ```
 
 
+#### `Pixel`
+
+``` purescript
+newtype Pixel
+  = Pixel Number
+```
+
+
 #### `Style`
 
 ``` purescript
@@ -317,7 +404,7 @@ newtype Style
 #### `StyleRec`
 
 ``` purescript
-type StyleRec = { backgroundColor :: Maybe RGB, color :: Maybe RGB }
+type StyleRec = { width :: Maybe Pixel, height :: Maybe Pixel, backgroundColor :: Maybe RGB, color :: Maybe RGB }
 ```
 
 
@@ -349,34 +436,6 @@ instance backgroundColorNameListItem :: UI.BackgroundColorName ListItem
 ```
 
 
-#### `colorNameBody`
-
-``` purescript
-instance colorNameBody :: UI.ColorName Body
-```
-
-
-#### `colorNameBodyTag`
-
-``` purescript
-instance colorNameBodyTag :: UI.ColorName BodyTag
-```
-
-
-#### `colorNameHTML`
-
-``` purescript
-instance colorNameHTML :: UI.ColorName HTML
-```
-
-
-#### `colorNameListItem`
-
-``` purescript
-instance colorNameListItem :: UI.ColorName ListItem
-```
-
-
 #### `backgroundColorRGBBody`
 
 ``` purescript
@@ -402,6 +461,34 @@ instance backgroundColorRGBHTML :: UI.BackgroundColorRGB HTML
 
 ``` purescript
 instance backgroundColorRGBListItem :: UI.BackgroundColorRGB ListItem
+```
+
+
+#### `colorNameBody`
+
+``` purescript
+instance colorNameBody :: UI.ColorName Body
+```
+
+
+#### `colorNameBodyTag`
+
+``` purescript
+instance colorNameBodyTag :: UI.ColorName BodyTag
+```
+
+
+#### `colorNameHTML`
+
+``` purescript
+instance colorNameHTML :: UI.ColorName HTML
+```
+
+
+#### `colorNameListItem`
+
+``` purescript
+instance colorNameListItem :: UI.ColorName ListItem
 ```
 
 
@@ -447,6 +534,34 @@ instance groupVerticalBodyTag :: UI.GroupVertical BodyTag
 ```
 
 
+#### `heightBody`
+
+``` purescript
+instance heightBody :: UI.Height Body
+```
+
+
+#### `heightBodyTag`
+
+``` purescript
+instance heightBodyTag :: UI.Height BodyTag
+```
+
+
+#### `heightHTML`
+
+``` purescript
+instance heightHTML :: UI.Height HTML
+```
+
+
+#### `heightListItem`
+
+``` purescript
+instance heightListItem :: UI.Height ListItem
+```
+
+
 #### `listBodyTag`
 
 ``` purescript
@@ -486,6 +601,34 @@ instance titleHead :: UI.Title Head
 
 ``` purescript
 instance titleTitle :: UI.Title Title
+```
+
+
+#### `widthBody`
+
+``` purescript
+instance widthBody :: UI.Width Body
+```
+
+
+#### `widthBodyTag`
+
+``` purescript
+instance widthBodyTag :: UI.Width BodyTag
+```
+
+
+#### `widthHTML`
+
+``` purescript
+instance widthHTML :: UI.Width HTML
+```
+
+
+#### `widthListItem`
+
+``` purescript
+instance widthListItem :: UI.Width ListItem
 ```
 
 
@@ -613,6 +756,13 @@ instance renderRGB :: Render RGB
 ```
 
 
+#### `renderPixel`
+
+``` purescript
+instance renderPixel :: Render Pixel
+```
+
+
 
 ## Module Graphics.UI.Interpreter.ReactSimple
 
@@ -637,10 +787,52 @@ instance groupVerticalComponent :: GroupVertical R.Component
 ```
 
 
+#### `heightComponent`
+
+``` purescript
+instance heightComponent :: Height R.Component
+```
+
+
+#### `imageComponent`
+
+``` purescript
+instance imageComponent :: Image R.Component
+```
+
+
+#### `marginComponent`
+
+``` purescript
+instance marginComponent :: Margin R.Component
+```
+
+
+#### `paddingComponent`
+
+``` purescript
+instance paddingComponent :: Padding R.Component
+```
+
+
+#### `positionComponent`
+
+``` purescript
+instance positionComponent :: Position R.Component
+```
+
+
 #### `textComponent`
 
 ``` purescript
 instance textComponent :: Text R.Component
+```
+
+
+#### `widthComponent`
+
+``` purescript
+instance widthComponent :: Width R.Component
 ```
 
 

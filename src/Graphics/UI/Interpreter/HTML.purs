@@ -17,7 +17,7 @@ module Graphics.UI.Interpreter.HTML where
 
   -- | We make an AST of `HTML`.
   -- | Though it'd be nice if this existed somewhere else.
-  data HTML = HTML Head Body
+  data HTML = HTML Style Head Body
 
   newtype Head = Head Title
 
@@ -34,10 +34,14 @@ module Graphics.UI.Interpreter.HTML where
 
   data ListItem = Li Style BodyTag
 
+  newtype Pixel = Pixel Number
+
   newtype Style = Style StyleRec
   type StyleRec =
-    { color :: Maybe RGB
+    { color           :: Maybe RGB
     , backgroundColor :: Maybe RGB
+    , height          :: Maybe Pixel
+    , width           :: Maybe Pixel
     }
 
   instance backgroundColorNameBody :: UI.BackgroundColorName Body where
@@ -57,34 +61,12 @@ module Graphics.UI.Interpreter.HTML where
       Ul   (Style style{backgroundColor = Just $ name2RGB c}) lis
 
   instance backgroundColorNameHTML :: UI.BackgroundColorName HTML where
-    backgroundColor c (HTML head body) = HTML head $ UI.backgroundColor c body
+    backgroundColor c (HTML (Style style) head body) =
+      HTML (Style style{backgroundColor = Just $ name2RGB c}) head body
 
   instance backgroundColorNameListItem :: UI.BackgroundColorName ListItem where
     backgroundColor c (Li (Style style) tag) =
       Li (Style style{backgroundColor = Just $ name2RGB c}) tag
-
-  instance colorNameBody :: UI.ColorName Body where
-    color c (Body (Style style) tags) =
-      Body (Style style{color = Just $ name2RGB c}) tags
-
-  instance colorNameBodyTag :: UI.ColorName BodyTag where
-    color c (Div  (Style style) tags) =
-      Div  (Style style{color = Just $ name2RGB c}) tags
-    color c (P    (Style style) str)  =
-      P    (Style style{color = Just $ name2RGB c}) str
-    color c (Span (Style style) str)  =
-      Span (Style style{color = Just $ name2RGB c}) str
-    color c (Text str)                =
-      UI.color c $ Span noStyle [Text str]
-    color c (Ul   (Style style) lis)  =
-      Ul   (Style style{color = Just $ name2RGB c}) lis
-
-  instance colorNameHTML :: UI.ColorName HTML where
-    color c (HTML head body) = HTML head $ UI.color c body
-
-  instance colorNameListItem :: UI.ColorName ListItem where
-    color c (Li (Style style) tag) =
-      Li (Style style{color = Just $ name2RGB c}) tag
 
   instance backgroundColorRGBBody :: UI.BackgroundColorRGB Body where
     backgroundRGB c (Body (Style style) tags) =
@@ -103,11 +85,36 @@ module Graphics.UI.Interpreter.HTML where
       Ul   (Style style{backgroundColor = Just c}) lis
 
   instance backgroundColorRGBHTML :: UI.BackgroundColorRGB HTML where
-    backgroundRGB c (HTML head body) = HTML head $ UI.backgroundRGB c body
+    backgroundRGB c (HTML (Style style) head body) =
+      HTML (Style style{backgroundColor = Just c}) head body
 
   instance backgroundColorRGBListItem :: UI.BackgroundColorRGB ListItem where
     backgroundRGB c (Li (Style style) tag) =
       Li (Style style{backgroundColor = Just c}) tag
+
+  instance colorNameBody :: UI.ColorName Body where
+    color c (Body (Style style) tags) =
+      Body (Style style{color = Just $ name2RGB c}) tags
+
+  instance colorNameBodyTag :: UI.ColorName BodyTag where
+    color c (Div  (Style style) tags) =
+      Div  (Style style{color = Just $ name2RGB c}) tags
+    color c (P    (Style style) str)  =
+      P    (Style style{color = Just $ name2RGB c}) str
+    color c (Span (Style style) str)  =
+      Span (Style style{color = Just $ name2RGB c}) str
+    color c (Text str)                =
+      UI.color c $ Span noStyle [Text str]
+    color c (Ul   (Style style) lis)  =
+      Ul   (Style style{color = Just $ name2RGB c}) lis
+
+  instance colorNameHTML :: UI.ColorName HTML where
+    color c (HTML (Style style) head body) =
+      HTML (Style style{color = Just $ name2RGB c}) head body
+
+  instance colorNameListItem :: UI.ColorName ListItem where
+    color c (Li (Style style) tag) =
+      Li (Style style{color = Just $ name2RGB c}) tag
 
   instance colorRGBBody :: UI.ColorRGB Body where
     rgb c (Body (Style style) tags) =
@@ -126,7 +133,8 @@ module Graphics.UI.Interpreter.HTML where
       Ul   (Style style{color = Just c}) lis
 
   instance colorRGBHTML :: UI.ColorRGB HTML where
-    rgb c (HTML head body) = HTML head $ UI.rgb c body
+    rgb c (HTML (Style style) head body) =
+      HTML (Style style{color = Just c}) head body
 
   instance colorRGBListItem :: UI.ColorRGB ListItem where
     rgb c (Li (Style style) tag) =
@@ -138,17 +146,40 @@ module Graphics.UI.Interpreter.HTML where
   instance groupVerticalBodyTag :: UI.GroupVertical BodyTag where
     groupVertical tags = Div noStyle [Div noStyle tags]
 
+  instance heightBody :: UI.Height Body where
+    height h (Body (Style style) tags) =
+      Body (Style style{height = Just $ Pixel h}) tags
+
+  instance heightBodyTag :: UI.Height BodyTag where
+    height h (Div (Style style) tags)  =
+      Div (Style style{height = Just $ Pixel h}) tags
+    height h (P (Style style) tags)    =
+      P (Style style{height = Just $ Pixel h}) tags
+    height h (Span (Style style) tags) =
+      Span (Style style{height = Just $ Pixel h}) tags
+    height _ t@(Text _)                = t
+    height h (Ul (Style style) tags)   =
+      Ul (Style style{height = Just $ Pixel h}) tags
+
+  instance heightHTML :: UI.Height HTML where
+    height h (HTML (Style style) head body) =
+      HTML (Style style{height = Just $ Pixel h}) head body
+
+  instance heightListItem :: UI.Height ListItem where
+    height h (Li (Style style) tags) =
+      Li (Style style{height = Just $ Pixel h}) tags
+
   instance listBodyTag :: UI.List BodyTag where
     list = Ul noStyle <<< ((Li noStyle) <$>)
 
   instance textHTML :: UI.Text HTML where
-    text str = HTML (Head $ Title "") (Body noStyle [UI.text str])
+    text str = HTML noStyle (Head $ Title "") (Body noStyle [UI.text str])
 
   instance textBodyTag :: UI.Text BodyTag where
     text = Text
 
   instance titleHTML :: UI.Title HTML where
-    title t (HTML head body) = HTML (UI.title t head) body
+    title t (HTML style head body) = HTML style (UI.title t head) body
 
   instance titleHead :: UI.Title Head where
     title t (Head t') = Head $ UI.title t t'
@@ -156,14 +187,42 @@ module Graphics.UI.Interpreter.HTML where
   instance titleTitle :: UI.Title Title where
     title t _ = Title t
 
+  instance widthBody :: UI.Width Body where
+    width w (Body (Style style) tags) =
+      Body (Style style{width = Just $ Pixel w}) tags
+
+  instance widthBodyTag :: UI.Width BodyTag where
+    width w (Div (Style style) tags)  =
+      Div (Style style{width = Just $ Pixel w}) tags
+    width w (P (Style style) tags)    =
+      P (Style style{width = Just $ Pixel w}) tags
+    width w (Span (Style style) tags) =
+      Span (Style style{width = Just $ Pixel w}) tags
+    width _ t@(Text _)                = t
+    width w (Ul (Style style) tags)   =
+      Ul (Style style{width = Just $ Pixel w}) tags
+
+  instance widthHTML :: UI.Width HTML where
+    width w (HTML (Style style) head body) =
+      HTML (Style style{width = Just $ Pixel w}) head body
+
+  instance widthListItem :: UI.Width ListItem where
+    width w (Li (Style style) tags) =
+      Li (Style style{width = Just $ Pixel w}) tags
+
   body' :: [BodyTag] -> Body
   body' = Body noStyle
 
   html' :: Body -> HTML
-  html' = HTML $ Head $ Title ""
+  html' = HTML noStyle $ Head $ Title ""
 
   noStyle :: Style
-  noStyle = Style {color: Nothing, backgroundColor: Nothing}
+  noStyle = Style
+    { backgroundColor: Nothing
+    , color: Nothing
+    , height: Nothing
+    , width: Nothing
+    }
 
   printHTML :: forall eff. HTML -> Eff (trace :: Trace | eff) Unit
   printHTML = render' >>> trace
@@ -183,13 +242,13 @@ module Graphics.UI.Interpreter.HTML where
   render' = render 0
 
   instance renderHTML :: Render HTML where
-    render n (HTML head body) = indent n "<html>"
-                             ++ "\n"
-                             ++ render (n + 2) head
-                             ++ "\n"
-                             ++ render (n + 2) body
-                             ++ "\n"
-                             ++ indent n "</html>"
+    render n (HTML style head body) = indent n "<html" ++ render' style ++ ">"
+                                   ++ "\n"
+                                   ++ render (n + 2) head
+                                   ++ "\n"
+                                   ++ render (n + 2) body
+                                   ++ "\n"
+                                   ++ indent n "</html>"
 
   instance renderHead :: Render Head where
     render n (Head title) = indent n "<head>"
@@ -253,10 +312,15 @@ module Graphics.UI.Interpreter.HTML where
   -- TODO: This is ugly as all get out. Clean this up.
   instance renderStyle :: Render Style where
     render _ (Style style) = fromMaybe ""
-      $  (("color: " ++)            <<< render' <$> style.color)
-      ++ (("background-color: " ++) <<< render' <$> style.backgroundColor)
+      $  (("background-color: " ++) <<< render' <$> style.backgroundColor)
+      ++ (("color: " ++)            <<< render' <$> style.color)
+      ++ (("height: " ++)           <<< render' <$> style.height)
+      ++ (("width: " ++)            <<< render' <$> style.width)
       <#> \s -> " style=\"" ++ s ++ "\""
 
   instance renderRGB :: Render RGB where
     render _ (RGB {red = r, green = g, blue = b}) =
       "rgb(" ++ show r ++ ", " ++ show g ++ ", " ++ show b ++ "); "
+
+  instance renderPixel :: Render Pixel where
+    render _ (Pixel px) = show px ++ "px;"
