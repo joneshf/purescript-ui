@@ -2,25 +2,22 @@
 -}
 module Examples.Graphics.UI.Logo (Logo, logo) where
 
-  import Control.Monad.Eff
+  import Data.Tuple (Tuple(..), uncurry)
 
-  import Data.Tuple
-
-  import DOM
-
-  import FRP.Kefir
+  import FRP.Kefir (EffKefir(), Unregister(), fromEvent, onValue)
 
   import Graphics.UI
+    ( Image, image
+    , Position, position
+    )
 
   class (Image g, Position g) <= Logo g
 
+  url :: String
   url = "https://raw.githubusercontent.com/goodworkson/purescript-logo/master/ps_avatar.png"
 
-  rawLogo :: forall g. (Logo g) => g
-  rawLogo = image url
-
   moveLogo :: forall g. (Logo g) => Number -> Number -> g
-  moveLogo x y = rawLogo
+  moveLogo x y = image url
                # position x y
 
   logo :: forall eff g. (Logo g) => (g -> EffKefir eff _) -> EffKefir eff (Unregister eff)
