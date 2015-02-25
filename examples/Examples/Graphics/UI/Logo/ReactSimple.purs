@@ -9,6 +9,6 @@ module Examples.Graphics.UI.Logo.ReactSimple where
   import React (renderComponentById)
   import React.Types (Component())
 
-  main = logo (\comp -> renderComponentById comp "content")
+  main = logo $ flip renderComponentById "content"
 
   instance logoComponent :: Logo Component
