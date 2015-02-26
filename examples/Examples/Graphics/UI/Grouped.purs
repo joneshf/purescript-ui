@@ -5,11 +5,11 @@ module Examples.Graphics.UI.Grouped where
   import Graphics.UI
   import Graphics.UI.Color.Name
 
-  grouped :: forall g
-          .  ( BackgroundColorName g, ColorName g, GroupVertical g
-             , GroupHorizontal g, Text g
-             )
-          => g
+  class ( BackgroundColorName g, ColorName g, GroupVertical g, GroupHorizontal g
+        , Text g
+        ) <= Grouped g
+
+  grouped :: forall g. (Grouped g) => g
   grouped = groupVertical [ groupHorizontal [ text "This is one row of stuff"
                                             , text "Here's another thing!"
                                             , text "It's all blue!"
