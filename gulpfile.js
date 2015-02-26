@@ -28,7 +28,10 @@ var paths = {
                   ],
             terminal: [ 'examples/Examples/Graphics/UI/Colorful/Terminal.purs'
                       , 'examples/Examples/Graphics/UI/Colorful.purs'
-                      ]
+                      ],
+            wish: [ 'examples/Examples/Graphics/UI/Colorful/Wish.purs'
+                  , 'examples/Examples/Graphics/UI/Colorful.purs'
+                  ]
         },
         grouped: {
             html: [ 'examples/Examples/Graphics/UI/Grouped/HTML.purs'
@@ -85,6 +88,10 @@ var options = {
             terminal: {
                 main: 'Examples.Graphics.UI.Colorful.Terminal',
                 modules: 'Examples.Graphics.UI.Colorful.Terminal'
+            },
+            wish: {
+                main: 'Examples.Graphics.UI.Colorful.Wish',
+                modules: 'Examples.Graphics.UI.Colorful.Wish'
             }
         },
         grouped: {
@@ -208,6 +215,17 @@ gulp.task('examples-Colorful-Terminal', function() {
         .pipe(run('node'));
 });
 
+gulp.task('examples-Colorful-Wish-Compile', function() {
+    return compile(purescript.psc, paths.examples.colorful.wish, options.examples.colorful.wish)
+        .pipe(run('node | cat > examples/Examples/Graphics/UI/Colorful/Wish/colorful.sh'));
+});
+
+gulp.task('examples-Colorful-Wish', ['examples-Colorful-Wish-Compile'], function() {
+    return gulp.src('examples/Examples/Graphics/UI/Colorful/Wish/colorful.sh')
+        .pipe(chmod(755))
+        .pipe(gulp.dest('examples/Examples/Graphics/UI/Colorful/Wish/'));
+});
+
 gulp.task('examples-Grouped-HTML', function() {
     return compile(purescript.psc, paths.examples.grouped.html, options.examples.grouped.html)
         .pipe(run('node | cat > examples/Examples/Graphics/UI/Grouped/HTML/index.html'));
@@ -260,6 +278,7 @@ gulp.task('examples-Logo-ReactSimple', function() {
 gulp.task('examples', [ 'examples-Button-ReactSimple'
                       , 'examples-Colorful-HTML'
                       , 'examples-Colorful-Terminal'
+                      , 'examples-Colorful-Wish'
                       , 'examples-Grouped-HTML'
                       , 'examples-Hello-BodyTag'
                       , 'examples-Hello-HTML'

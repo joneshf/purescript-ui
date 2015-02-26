@@ -24,4 +24,5 @@ module Examples.Graphics.UI.Grouped where
                                               # color Yellow
                                               # backgroundColor Black
                                             ]
+                            # backgroundColor Green
                           ]

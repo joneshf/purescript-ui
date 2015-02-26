@@ -8,7 +8,7 @@ pack .frame0.frame1.label3 -side left
 label .frame0.frame1.label4 -text "It's all blue!" -foreground #0000ff
 pack .frame0.frame1.label4 -side left
 pack .frame0.frame1 -side top
-frame .frame0.frame5
+frame .frame0.frame5 -background #00ff00
 label .frame0.frame5.label6 -text "We started a new row"
 pack .frame0.frame5.label6 -side left
 label .frame0.frame5.label7 -text "Here's some blue text" -foreground #0000ff
