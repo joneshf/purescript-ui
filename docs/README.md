@@ -201,6 +201,76 @@ name2RGB :: Name -> RGB
 ```
 
 
+#### `rgb2Hex`
+
+``` purescript
+rgb2Hex :: RGB -> I.Hex
+```
+
+
+#### `name2Hex`
+
+``` purescript
+name2Hex :: Name -> I.Hex
+```
+
+
+
+## Module Graphics.UI.Color.Hex
+
+#### `Hex`
+
+``` purescript
+type Hex = I.Hex
+```
+
+
+
+## Module Graphics.UI.Color.Hex.Internal
+
+#### `Hex`
+
+``` purescript
+newtype Hex
+  = Hex RGB
+```
+
+
+#### `runHex`
+
+``` purescript
+runHex :: Hex -> RGB
+```
+
+
+#### `showHex`
+
+``` purescript
+instance showHex :: Show Hex
+```
+
+
+#### `IsoP`
+
+``` purescript
+type IsoP s a = forall f p. (Functor f, Profunctor p) => p a (f a) -> p s (f s)
+```
+
+
+#### `_Hex`
+
+``` purescript
+_Hex :: IsoP Hex RGB
+```
+
+
+#### `toHex`
+
+``` purescript
+toHex :: Number -> String
+```
+
+
 
 ## Module Graphics.UI.Color.Name
 
@@ -219,13 +289,6 @@ data Name
 
 The possible colors we can make.
 Based on the first six stages of color in language by Berlin and Kay.
-
-#### `PrismP`
-
-``` purescript
-type PrismP s a = forall f p. (Applicative f, Choice p) => p a (f a) -> p s (f s)
-```
-
 
 #### `_Black`
 
@@ -294,6 +357,13 @@ type RGBRec = { blue :: Number, green :: Number, red :: Number }
 ```
 
 
+#### `runRGB`
+
+``` purescript
+runRGB :: RGB -> RGBRec
+```
+
+
 #### `showRGB`
 
 ``` purescript
@@ -301,17 +371,17 @@ instance showRGB :: Show RGB
 ```
 
 
-#### `LensP`
+#### `IsoP`
 
 ``` purescript
-type LensP s a = forall f. (Functor f) => (a -> f a) -> s -> f s
+type IsoP s a = forall f p. (Functor f, Profunctor p) => p a (f a) -> p s (f s)
 ```
 
 
 #### `_RGB`
 
 ``` purescript
-_RGB :: LensP RGB RGBRec
+_RGB :: IsoP RGB RGBRec
 ```
 
 
@@ -995,7 +1065,7 @@ newtype Options
 #### `OptionsRec`
 
 ``` purescript
-type OptionsRec = { foreground :: Maybe RGB, background :: Maybe RGB }
+type OptionsRec = { foreground :: Maybe Hex, background :: Maybe Hex }
 ```
 
 
@@ -1133,13 +1203,6 @@ renderWish' :: forall m. (Monad m) => WishEnv m Names
 ```
 
 
-#### `rgb2HexStr`
-
-``` purescript
-rgb2HexStr :: RGB -> String
-```
-
-
 #### `modifies`
 
 ``` purescript
@@ -1216,16 +1279,6 @@ _Label :: PrismP Wish { options :: Options, label :: String, hierarchy :: Hierar
 
 ``` purescript
 _Pack :: PrismP GeometryManager { side :: Side, wishes :: [Wish] }
-```
-
-
-
-## Module Graphics.UI.Interpreter.Wish.Foreign
-
-#### `toHex`
-
-``` purescript
-toHex :: Number -> String
 ```
 
 

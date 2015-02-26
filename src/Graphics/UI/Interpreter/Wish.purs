@@ -24,9 +24,8 @@ module Graphics.UI.Interpreter.Wish where
     , GroupVertical
     , Text
     )
-  import Graphics.UI.Color (name2RGB)
-  import Graphics.UI.Color.RGB (RGB(..))
-  import Graphics.UI.Interpreter.Wish.Foreign (toHex)
+  import Graphics.UI.Color (name2Hex)
+  import Graphics.UI.Color.Hex (Hex(..))
 
   import Optic.Core (Lens(), LensP(), PrismP(), (..), (?~), prism')
 
@@ -43,8 +42,8 @@ module Graphics.UI.Interpreter.Wish where
 
   newtype Options = Options OptionsRec
   type OptionsRec =
-    { background :: Maybe RGB
-    , foreground :: Maybe RGB
+    { background :: Maybe Hex
+    , foreground :: Maybe Hex
     }
 
   noOptions :: Options
@@ -57,10 +56,10 @@ module Graphics.UI.Interpreter.Wish where
 
   instance backgroundColorNameWish :: BackgroundColorName Wish where
     backgroundColor c (Frame h ws opts) =
-      Frame h ws (opts # _Options..background ?~ name2RGB c)
+      Frame h ws (opts # _Options..background ?~ name2Hex c)
     backgroundColor c (GM gm)           = GM $ backgroundColor c gm
     backgroundColor c (Label h s opts)  =
-      Label h s (opts # _Options..background ?~ name2RGB c)
+      Label h s (opts # _Options..background ?~ name2Hex c)
 
   instance backgroundColorNameGeometryManager :: BackgroundColorName GeometryManager where
     backgroundColor c (Pack ws side) = Pack (backgroundColor c <$> ws) side
@@ -68,7 +67,7 @@ module Graphics.UI.Interpreter.Wish where
   instance colorNameWish :: ColorName Wish where
     color c (GM gm)           = GM $ color c gm
     color c (Label h s opts)  =
-      Label h s (opts # _Options..foreground ?~ name2RGB c)
+      Label h s (opts # _Options..foreground ?~ name2Hex c)
     color c (Frame h ws opts) = Frame h (color c <$> ws) opts
 
   instance colorNameGeometryManager :: ColorName GeometryManager where
@@ -102,8 +101,8 @@ module Graphics.UI.Interpreter.Wish where
 
   renderOptions :: Options -> String
   renderOptions (Options rec) = fromMaybe ""
-    $  (rec.background <#> \bg -> " -background " ++ rgb2HexStr bg)
-    ++ (rec.foreground <#> \fg -> " -foreground " ++ rgb2HexStr fg)
+    $  (rec.background <#> \bg -> " -background " ++ show bg)
+    ++ (rec.foreground <#> \fg -> " -foreground " ++ show fg)
 
   renderPack :: forall m. (Monad m) => Names -> Side -> WishEnv m _
   renderPack names side = for names \name ->
@@ -146,10 +145,6 @@ module Graphics.UI.Interpreter.Wish where
       let path = intercalate "." $ hier `snoc` name
       tellLn $ "label " ++ path ++ renderText text ++ renderOptions opts
       pure [path]
-
-  rgb2HexStr :: RGB -> String
-  rgb2HexStr (RGB rec) =
-    "#" ++ toHex rec.red ++ toHex rec.green ++ toHex rec.blue
 
   -- | RWS stuff
 
@@ -202,11 +197,3 @@ module Graphics.UI.Interpreter.Wish where
                    Pack w s -> Just {wishes: w, side: s}
                    _        -> Nothing
                  )
-
-module Graphics.UI.Interpreter.Wish.Foreign where
-
-  foreign import toHex """
-    function toHex(num) {
-      var hex = num.toString("16");
-      return hex.length == 1 ? "0" + hex : hex;
-    }""" :: Number -> String

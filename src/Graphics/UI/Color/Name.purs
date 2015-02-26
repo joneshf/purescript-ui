@@ -3,6 +3,8 @@ module Graphics.UI.Color.Name where
   import Data.Profunctor (dimap)
   import Data.Profunctor.Choice (Choice)
 
+  import Optic.Core
+
   -- | The possible colors we can make.
   -- | Based on the first six stages of color in language by Berlin and Kay.
   data Name = Black
@@ -12,8 +14,6 @@ module Graphics.UI.Color.Name where
             | Yellow
             | Blue
             | Purple
-
-  type PrismP s a = forall f p. (Applicative f, Choice p) => p a (f a) -> p s (f s)
 
   _Black :: PrismP Name Unit
   _Black = dimap (const unit) ((const Black) <$>)
