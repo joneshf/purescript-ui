@@ -2,6 +2,7 @@
 
 var gulp        = require('gulp')
   , bump        = require('gulp-bump')
+  , chmod       = require('gulp-chmod')
   , filter      = require('gulp-filter')
   , git         = require('gulp-git')
   , purescript  = require('gulp-purescript')
@@ -32,7 +33,10 @@ var paths = {
         grouped: {
             html: [ 'examples/Examples/Graphics/UI/Grouped/HTML.purs'
                   , 'examples/Examples/Graphics/UI/Grouped.purs'
-                  ]
+                  ],
+            wish: [ 'examples/Examples/Graphics/UI/Grouped/Wish.purs'
+                , 'examples/Examples/Graphics/UI/Grouped.purs'
+                ]
         },
         hello: {
             bodyTag: [ 'examples/Examples/Graphics/UI/Hello/BodyTag.purs'
@@ -41,12 +45,15 @@ var paths = {
             html: [ 'examples/Examples/Graphics/UI/Hello/HTML.purs'
                   , 'examples/Examples/Graphics/UI/Hello.purs'
                   ],
+            terminal: [ 'examples/Examples/Graphics/UI/Hello/Terminal.purs'
+                      , 'examples/Examples/Graphics/UI/Hello.purs'
+                      ],
             thermite: [ 'examples/Examples/Graphics/UI/Hello/Thermite.purs'
                       , 'examples/Examples/Graphics/UI/Hello.purs'
                       ],
-            terminal: [ 'examples/Examples/Graphics/UI/Hello/Terminal.purs'
-                      , 'examples/Examples/Graphics/UI/Hello.purs'
-                      ]
+            wish: [ 'examples/Examples/Graphics/UI/Hello/Wish.purs'
+                , 'examples/Examples/Graphics/UI/Hello.purs'
+                ]
         },
         logo: {
             reactSimple: [ 'examples/Examples/Graphics/UI/Logo/ReactSimple.purs'
@@ -65,8 +72,8 @@ var options = {
     examples: {
         button: {
             reactSimple: {
-                modules: 'Examples.Graphics.UI.Button.ReactSimple',
                 main: 'Examples.Graphics.UI.Button.ReactSimple',
+                modules: 'Examples.Graphics.UI.Button.ReactSimple',
                 output: 'examples/Examples/Graphics/UI/Button/ReactSimple/button.js'
             }
         },
@@ -84,6 +91,10 @@ var options = {
             html: {
                 main: 'Examples.Graphics.UI.Grouped.HTML',
                 modules: 'Examples.Graphics.UI.Grouped.HTML'
+            },
+            wish: {
+                main: 'Examples.Graphics.UI.Grouped.Wish',
+                modules: 'Examples.Graphics.UI.Grouped.Wish'
             }
         },
         hello: {
@@ -95,14 +106,18 @@ var options = {
                 main: 'Examples.Graphics.UI.Hello.HTML',
                 modules: 'Examples.Graphics.UI.Hello.HTML'
             },
-            thermite: {
-                modules: 'Examples.Graphics.UI.Hello.Thermite',
-                main: 'Examples.Graphics.UI.Hello.Thermite',
-                output: 'examples/Examples/Graphics/UI/Hello/Thermite/hello.js'
-            },
             terminal: {
                 main: 'Examples.Graphics.UI.Hello.Terminal',
                 modules: 'Examples.Graphics.UI.Hello.Terminal'
+            },
+            thermite: {
+                main: 'Examples.Graphics.UI.Hello.Thermite',
+                modules: 'Examples.Graphics.UI.Hello.Thermite',
+                output: 'examples/Examples/Graphics/UI/Hello/Thermite/hello.js'
+            },
+            wish: {
+                main: 'Examples.Graphics.UI.Hello.Wish',
+                modules: 'Examples.Graphics.UI.Hello.Wish'
             }
         },
         logo: {
@@ -198,6 +213,17 @@ gulp.task('examples-Grouped-HTML', function() {
         .pipe(run('node | cat > examples/Examples/Graphics/UI/Grouped/HTML/index.html'));
 });
 
+gulp.task('examples-Grouped-Wish-Compile', function() {
+    return compile(purescript.psc, paths.examples.grouped.wish, options.examples.grouped.wish)
+        .pipe(run('node | cat > examples/Examples/Graphics/UI/Grouped/Wish/grouped.sh'));
+});
+
+gulp.task('examples-Grouped-Wish', ['examples-Grouped-Wish-Compile'], function() {
+    return gulp.src('examples/Examples/Graphics/UI/Grouped/Wish/grouped.sh')
+        .pipe(chmod(755))
+        .pipe(gulp.dest('examples/Examples/Graphics/UI/Grouped/Wish/'));
+});
+
 gulp.task('examples-Hello-BodyTag', function() {
     return compile(purescript.psc, paths.examples.hello.bodyTag, options.examples.hello.bodyTag);
 });
@@ -216,6 +242,17 @@ gulp.task('examples-Hello-Thermite', function() {
     return compile(purescript.psc, paths.examples.hello.thermite, options.examples.hello.thermite);
 });
 
+gulp.task('examples-Hello-Wish-Compile', function() {
+    return compile(purescript.psc, paths.examples.hello.wish, options.examples.hello.wish)
+        .pipe(run('node | cat > examples/Examples/Graphics/UI/Hello/Wish/hello.sh'));
+});
+
+gulp.task('examples-Hello-Wish', ['examples-Hello-Wish-Compile'], function() {
+    return gulp.src('examples/Examples/Graphics/UI/Hello/Wish/hello.sh')
+        .pipe(chmod(755))
+        .pipe(gulp.dest('examples/Examples/Graphics/UI/Hello/Wish/'));
+});
+
 gulp.task('examples-Logo-ReactSimple', function() {
     return compile(purescript.psc, paths.examples.logo.reactSimple, options.examples.logo.reactSimple);
 });
@@ -228,6 +265,7 @@ gulp.task('examples', [ 'examples-Button-ReactSimple'
                       , 'examples-Hello-HTML'
                       , 'examples-Hello-Terminal'
                       , 'examples-Hello-Thermite'
+                      , 'examples-Hello-Wish'
                       , 'examples-Logo-ReactSimple'
                       ]);
 

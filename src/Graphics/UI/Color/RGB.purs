@@ -3,6 +3,13 @@ module Graphics.UI.Color.RGB where
   newtype RGB = RGB RGBRec
   type RGBRec = {red :: Number, green :: Number, blue :: Number}
 
+  instance showRGB :: Show RGB where
+    show (RGB rec) = "RGB "
+                  ++ "{red: "    ++ show rec.red
+                  ++ ", green: " ++ show rec.green
+                  ++ ", blue: "  ++ show rec.blue
+                  ++ "}"
+
   type LensP s a = forall f. (Functor f) => (a -> f a) -> s -> f s
 
   _RGB :: LensP RGB RGBRec

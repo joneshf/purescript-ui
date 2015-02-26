@@ -294,6 +294,13 @@ type RGBRec = { blue :: Number, green :: Number, red :: Number }
 ```
 
 
+#### `showRGB`
+
+``` purescript
+instance showRGB :: Show RGB
+```
+
+
 #### `LensP`
 
 ``` purescript
@@ -928,6 +935,297 @@ instance textThermiteHtml :: Text (T.Html action)
 
 ``` purescript
 instance textThermiteComponentClass :: Text (T.ComponentClass props eff)
+```
+
+
+
+## Module Graphics.UI.Interpreter.Wish
+
+#### `Hierarchy`
+
+``` purescript
+type Hierarchy = [String]
+```
+
+
+#### `Names`
+
+``` purescript
+type Names = [String]
+```
+
+
+#### `Side`
+
+``` purescript
+data Side
+  = T 
+  | L 
+  | R 
+  | B 
+```
+
+
+#### `Wish`
+
+``` purescript
+data Wish
+  = GM GeometryManager
+  | Frame Hierarchy [Wish] Options
+  | Label Hierarchy String Options
+```
+
+
+#### `GeometryManager`
+
+``` purescript
+data GeometryManager
+  = Pack [Wish] Side
+```
+
+
+#### `Options`
+
+``` purescript
+newtype Options
+  = Options OptionsRec
+```
+
+
+#### `OptionsRec`
+
+``` purescript
+type OptionsRec = { foreground :: Maybe RGB, background :: Maybe RGB }
+```
+
+
+#### `noOptions`
+
+``` purescript
+noOptions :: Options
+```
+
+
+#### `WishEnv`
+
+``` purescript
+type WishEnv = RWST Wish String Number
+```
+
+
+#### `backgroundColorNameWish`
+
+``` purescript
+instance backgroundColorNameWish :: BackgroundColorName Wish
+```
+
+
+#### `backgroundColorNameGeometryManager`
+
+``` purescript
+instance backgroundColorNameGeometryManager :: BackgroundColorName GeometryManager
+```
+
+
+#### `colorNameWish`
+
+``` purescript
+instance colorNameWish :: ColorName Wish
+```
+
+
+#### `colorNameGeometryManager`
+
+``` purescript
+instance colorNameGeometryManager :: ColorName GeometryManager
+```
+
+
+#### `groupHorizontalWish`
+
+``` purescript
+instance groupHorizontalWish :: GroupHorizontal Wish
+```
+
+
+#### `groupVerticalWish`
+
+``` purescript
+instance groupVerticalWish :: GroupVertical Wish
+```
+
+
+#### `textWish`
+
+``` purescript
+instance textWish :: Text Wish
+```
+
+
+#### `fixHierarchy`
+
+``` purescript
+fixHierarchy :: String -> [Wish] -> [Wish]
+```
+
+
+#### `fixSide`
+
+``` purescript
+fixSide :: Side -> [Wish] -> [Wish]
+```
+
+
+#### `printWish`
+
+``` purescript
+printWish :: Wish -> Eff (trace :: Trace | _) Unit
+```
+
+
+#### `renderOptions`
+
+``` purescript
+renderOptions :: Options -> String
+```
+
+
+#### `renderPack`
+
+``` purescript
+renderPack :: forall m. (Monad m) => Names -> Side -> WishEnv m _
+```
+
+
+#### `renderShebang`
+
+``` purescript
+renderShebang :: String
+```
+
+
+#### `renderSide`
+
+``` purescript
+renderSide :: Side -> String
+```
+
+
+#### `renderText`
+
+``` purescript
+renderText :: String -> String
+```
+
+
+#### `renderWish`
+
+``` purescript
+renderWish :: forall m. (Monad m) => WishEnv m Names
+```
+
+Generate a simple shell script.
+
+#### `renderWish'`
+
+``` purescript
+renderWish' :: forall m. (Monad m) => WishEnv m Names
+```
+
+
+#### `rgb2HexStr`
+
+``` purescript
+rgb2HexStr :: RGB -> String
+```
+
+
+#### `modifies`
+
+``` purescript
+modifies :: forall m w. (Monad m, Monoid w) => _ -> RWST _ w _ m _
+```
+
+RWS stuff
+
+#### `tellLn`
+
+``` purescript
+tellLn :: forall m w. (Monad m, Monoid w) => _ -> RWST _ w _ m Unit
+```
+
+
+#### `_Options`
+
+``` purescript
+_Options :: LensP Options OptionsRec
+```
+
+Optic stuff
+
+#### `background`
+
+``` purescript
+background :: forall a b. Lens { background :: a | _ } { background :: b | _ } a b
+```
+
+
+#### `foreground`
+
+``` purescript
+foreground :: forall a b. Lens { foreground :: a | _ } { foreground :: b | _ } a b
+```
+
+
+#### `hierarchy`
+
+``` purescript
+hierarchy :: forall a b. Lens { hierarchy :: a | _ } { hierarchy :: b | _ } a b
+```
+
+
+#### `ws`
+
+``` purescript
+ws :: forall a b. Lens { ws :: a | _ } { ws :: b | _ } a b
+```
+
+
+#### `_Frame`
+
+``` purescript
+_Frame :: PrismP Wish { options :: Options, wishes :: [Wish], hierarchy :: Hierarchy }
+```
+
+
+#### `_GM`
+
+``` purescript
+_GM :: PrismP Wish GeometryManager
+```
+
+
+#### `_Label`
+
+``` purescript
+_Label :: PrismP Wish { options :: Options, label :: String, hierarchy :: Hierarchy }
+```
+
+
+#### `_Pack`
+
+``` purescript
+_Pack :: PrismP GeometryManager { side :: Side, wishes :: [Wish] }
+```
+
+
+
+## Module Graphics.UI.Interpreter.Wish.Foreign
+
+#### `toHex`
+
+``` purescript
+toHex :: Number -> String
 ```
 
 

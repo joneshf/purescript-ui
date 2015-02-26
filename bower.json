@@ -7,7 +7,10 @@
     "purescript-foldable-traversable": "~0.3.0",
     "purescript-thermite": "~0.5.2",
     "purescript-profunctor": "~0.1.0",
-    "purescript-react-simple": "~0.1.1"
+    "purescript-react-simple": "~0.1.1",
+    "purescript-transformers": "~0.5.1",
+    "purescript-strings": "~0.4.3",
+    "purescript-lens": "~0.6.0"
   },
   "devDependencies": {
     "purescript-signal": "~2.2.0",
